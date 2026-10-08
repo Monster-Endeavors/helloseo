@@ -1,0 +1,20 @@
+---
+import Img from '../components/blocks/Img.astro';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Text from '../components/blocks/Text.astro';
+import blueIvoryPurpleBlend from '../assets/images/blue-ivory-purple-blend.png';
+import gradient36abaf04 from '../assets/images/gradient-36abaf04.png';
+import socialShare6a8726b0 from '../assets/images/social-share-6a8726b0.png';
+---
+
+<Layout title="Thank You | Enhance Your Visibility Today — Contact Us | HelloSEO" description="HelloSEO offers expert SEO, digital PR, and paid advertising services to help businesses improve their online visibility and results." ogImage={socialShare6a8726b0}>
+  <Section height="small" bg={{ src: blueIvoryPurpleBlend, overlay: 0.15, eager: true }} grid={{ rows: [15, 14], rowGap: 11, colGap: 26 }}>
+    <Img m="4/4/6/8" d="4/12/6/16" z={4} align="center" anim={{ animations: [{ trigger: 'loop', duration: 2, ease: 'ease-in-out', frames: [{ y: '20%', sx: 0.95, sy: 0.95 }], alternate: true, iterations: 1 }] }} src={gradient36abaf04} alt="A stylized, minimalist illustration of a white cat with a happy expression and a curved tail, set against a red background." fit="contain" sizes="(max-width: 767px) 50vw, 17vw" eager />
+    <Text m="6/3/14/9" d="6/7/11/21" z={4} align="center">
+      <h2 class="ta-center"><em>Message received! </em></h2>
+      <p class="large ta-center">Thank you for reaching out. We’ll get back to you in 1-2 business days. </p>
+      <p class="large ta-center">Until then, check out <a href="/results">our results page</a> to see how we’ve been able to help other happy clients. </p>
+    </Text>
+  </Section>
+</Layout>

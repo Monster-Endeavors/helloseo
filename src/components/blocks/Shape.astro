@@ -1,0 +1,21 @@
+---
+import Block, { type Placement } from '../Block.astro';
+
+interface Props extends Placement {
+  fill?: string;
+  stroke?: { color: string; width: string };
+  radius?: string;
+}
+
+const { fill, stroke, radius, ...place } = Astro.props;
+const vars: string[] = [];
+if (fill) vars.push(`--shape-fill: ${fill}`);
+if (stroke) vars.push(`--shape-stroke: ${stroke.color}`, `--stroke-width: ${stroke.width}`);
+if (radius) vars.push(`--radius: ${radius}`);
+---
+
+<Block {...place}>
+  <div class="shape-block" style={vars.join('; ') || undefined}>
+    <div class="shape-block__shape" data-stroke={stroke ? '' : undefined}></div>
+  </div>
+</Block>

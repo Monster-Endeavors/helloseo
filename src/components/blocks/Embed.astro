@@ -1,0 +1,8 @@
+---
+import Block, { type Placement } from '../Block.astro';
+type Props = Placement;
+---
+
+<Block {...Astro.props}>
+  <div class="embed-block"><slot /></div>
+</Block>

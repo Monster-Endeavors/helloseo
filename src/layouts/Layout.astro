@@ -1,0 +1,82 @@
+---
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import defaultOg from '../assets/images/social-share-6a8726b0.png';
+import '../styles/fonts.css';
+import '../styles/themes.css';
+import '../styles/base.css';
+import '../styles/layout.css';
+import '../styles/blocks.css';
+import '../styles/header.css';
+import '../styles/lists.css';
+import '../styles/forms.css';
+import '../styles/blog.css';
+import '../styles/animations.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: ImageMetadata;
+  noindex?: boolean;
+  /** height of the divider on the page's last section, so the footer tucks under it */
+  footerOffset?: string;
+  /** colour theme of the first section (the header follows it) */
+  headerTheme?: string;
+}
+
+const { title, description, ogImage = defaultOg, noindex, footerOffset, headerTheme } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+const og = await getImage({ src: ogImage, format: 'png' });
+const ogUrl = new URL(og.src, Astro.site);
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" media="(prefers-color-scheme: light)" href="/favicon-light.png" />
+    <link rel="icon" type="image/png" media="(prefers-color-scheme: dark)" href="/favicon-dark.png" />
+    <link rel="preload" href="/fonts/arimo-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:site_name" content="HelloSEO" />
+    <meta property="og:title" content={title} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogUrl} />
+
+    <script is:inline>
+      // Enable reveal animations only when JS runs (and motion is welcome).
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-anim');
+    </script>
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <Header theme={headerTheme || undefined} />
+      <main id="page">
+        <slot />
+      </main>
+      <Footer offset={footerOffset} />
+    </div>
+    <script>
+      import { initAnimations } from '../scripts/animations';
+      import { initDividers } from '../scripts/divider';
+      import { initParallax } from '../scripts/parallax';
+      initDividers();
+      initParallax();
+      initAnimations();
+    </script>
+  </body>
+</html>

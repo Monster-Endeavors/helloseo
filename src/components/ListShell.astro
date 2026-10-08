@@ -1,0 +1,37 @@
+---
+/**
+ * Section wrapper used by the list-style sections (logo marquee, testimonials,
+ * stats). Unlike grid sections these have no min-height and pad themselves.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id?: string;
+  theme?: string;
+  /** vertical padding in vmax */
+  padding: [top: number, bottom: number];
+  bg?: { src: ImageMetadata; overlay?: number; focal?: string };
+  class?: string;
+}
+
+const { id, theme, padding, bg, class: className } = Astro.props;
+---
+
+<section id={id} class:list={['section', 'list-section', { 'section--has-bg': bg }, className]} data-theme={theme || undefined}>
+  <div class="section__border">
+    {
+      bg && (
+        <div class="section__bg">
+          <Image src={bg.src} alt="" widths={[750, 1000, 1500, 2500].filter((w) => w <= bg.src.width)} sizes="100vw" loading="lazy" style={bg.focal ? `object-position: ${bg.focal}` : undefined} />
+          <div class="section__overlay" style={`opacity: ${bg.overlay ?? 0}`} />
+        </div>
+      )
+    }
+  </div>
+  <div class="section__content">
+    <div class="list-section__inner" style={`padding: ${padding[0]}vmax 0 ${padding[1]}vmax`}>
+      <slot />
+    </div>
+  </div>
+</section>

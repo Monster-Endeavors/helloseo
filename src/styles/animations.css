@@ -1,0 +1,38 @@
+/* ---------------------------------------------------------------------------
+   Reveal-on-scroll (driven by src/scripts/animations.ts). Only active when the
+   inline head script has added `js-anim`, so content is never hidden without JS.
+   --------------------------------------------------------------------------- */
+.js-anim :is([data-reveal], .rte > :is(p, h1, h2, h3, h4), .list-title > p, .list-item__desc > p) {
+  transition-property: transform, opacity, clip-path;
+  transition-duration: 0.65s;
+  transition-timing-function: var(--ease-flex);
+}
+.js-anim :is([data-reveal], .rte > :is(p, h1, h2, h3, h4), .list-title > p, .list-item__desc > p):not(.is-revealed) {
+  opacity: 0;
+  transform: translate(0, 2vh);
+}
+
+/* carousel cards only fade (their transform belongs to the carousel) */
+.js-anim .carousel__slide[data-reveal] {
+  transition: opacity 0.65s var(--ease-flex), transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.js-anim .carousel__slide[data-reveal]:not(.is-revealed) { transform: none; }
+
+/* images wipe up from the bottom */
+.js-anim [data-reveal='image'] { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+.js-anim [data-reveal='image']:not(.is-revealed) {
+  transform: none;
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+}
+
+/* buttons slide up inside their clipped container */
+.js-anim :is([data-reveal='button'], .header__cta) .btn { transition: inherit; transform: translate(0, 0); }
+.js-anim :is([data-reveal='button'], .header__cta):not(.is-revealed) .btn { transform: translate(0, 100%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js-anim :is([data-reveal], .rte > *, .list-title > p, .list-item__desc > p) {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

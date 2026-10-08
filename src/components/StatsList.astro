@@ -1,0 +1,46 @@
+---
+/** Big numbers that count up when they scroll into view. */
+import ListShell from './ListShell.astro';
+
+interface Stat {
+  value: number;
+  /** e.g. "+", "%" */
+  suffix?: string;
+  /** thousands separator, e.g. "," */
+  separator?: string;
+  /** rich-text label under the number */
+  label: string;
+}
+
+interface Props {
+  id?: string;
+  theme?: string;
+  padding: [number, number];
+  stats: Stat[];
+  /** count-up duration in ms */
+  duration?: number;
+}
+
+const { stats, duration = 8000, ...shell } = Astro.props;
+const format = (s: Stat) => (s.separator && s.value >= 1000 ? s.value.toLocaleString('en-US').replace(/,/g, s.separator) : String(s.value)) + (s.suffix ?? '');
+---
+
+<ListShell {...shell}>
+  <ul class="stats" data-stats data-duration={duration}>
+    {
+      stats.map((s) => (
+        <li class="stats__item">
+          <h2 class="stats__value fluid-type" data-value={s.value} data-suffix={s.suffix} data-separator={s.separator}>
+            {format(s)}
+          </h2>
+          <div class="stats__label list-item__desc fluid-type" set:html={s.label} />
+        </li>
+      ))
+    }
+  </ul>
+</ListShell>
+
+<script>
+  import { initCounters } from '../scripts/counter';
+  initCounters();
+</script>

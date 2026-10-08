@@ -1,0 +1,59 @@
+---
+import Accordion from '../components/blocks/Accordion.astro';
+import Form from '../components/blocks/Form.astro';
+import Img from '../components/blocks/Img.astro';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Text from '../components/blocks/Text.astro';
+import { reportCardForm } from '../data/forms';
+import blueIvoryPurpleCorners from '../assets/images/blue-ivory-purple-corners.png';
+import gradientD81605ea from '../assets/images/gradient-d81605ea.png';
+import jphelloseoheadshots0626Staborstudios63 from '../assets/images/jphelloseoheadshots0626-staborstudios-63.jpg';
+import socialShare6a8726b0 from '../assets/images/social-share-6a8726b0.png';
+---
+
+<Layout title="Free SEO Report Card | Boost Your Search Ranking | HelloSEO" description="Get a free, tailored SEO report with actionable insights to improve your website's search visibility. Submit your URL today for expert analysis and recommendations." ogImage={socialShare6a8726b0} headerTheme="white">
+  <Section theme="white" height="small" bg={{ src: blueIvoryPurpleCorners, overlay: 0.63, eager: true }} grid={{ rows: [41, 20], rowGap: 11, colGap: 11 }}>
+    <Text m="2/2/20/10" d="3/3/20/14" z={2} align="center">
+      <p class="large"><strong>ACTIONABLE INSIGHTS DELIVERED TO YOUR INBOX</strong></p>
+      <h1><span class="c-black">The </span><span class="c-lightAccent">SEO Report Card</span><span class="c-black"> is a totally free tool to see how your website is performing and receive tailored-to-you tips to optimize it right away.</span></h1>
+      <p class="large">Submit the form and one of our SEO specialists will get to work, analyzing your current digital presence and sending you a video report that outlines where you stand today and what levers you can pull to improve your search visibility. </p>
+      <p class="small">No credit card required, no strings attached. Just submit your URL and we'll handle the rest.</p>
+    </Text>
+    <Form m="21/2/40/10" d="2/16/20/25" z={4} form={reportCardForm} bg="#fff" radius="30px" padding="12% 12% 12% 12%" />
+  </Section>
+
+  <Section grid={{ rows: [39, 24], rowGap: 22, colGap: 22 }}>
+    <Img m="1/2/3/10" d="2/11/4/17" z={3} align="center" src={gradientD81605ea} alt="Cartoon illustration of a smiling calico cat with closed eyes, a pink outline, and a cream-colored tail." fit="contain" sizes="(max-width: 767px) 100vw, 25vw" />
+    <Text m="3/2/6/10" d="4/6/6/22" z={1} align="center" alignM="start">
+      <h2 class="ta-center">Your <span class="c-lightAccent">Free SEO Report Card</span> Includes:  </h2>
+    </Text>
+    <Text m="6/2/13/10" d="6/4/13/14" z={4} zm={2} align="center" anim={{ animations: [{ trigger: 'hover', duration: 0.5, ease: 'spring', bounce: 0.3, frames: [{ sx: 1.05, sy: 1.05 }] }] }} bg="var(--darkAccent)" padding="6% 6% 6% 6%" radius="30px">
+      <h3><span class="c-white">SEO Score Breakdown: </span></h3>
+      <p><span class="c-white">Every report card comes with two grades: One grade measures overall SEO performance and the other measures how your page stacks up against your peers within top search results. </span></p>
+    </Text>
+    <Text m="13/2/20/10" d="6/14/13/24" z={5} zm={3} align="center" anim={{ animations: [{ trigger: 'hover', duration: 0.5, ease: 'spring', bounce: 0.3, frames: [{ sx: 1.05, sy: 1.05 }] }] }} bg="var(--mauve)" padding="6% 6% 6% 6%" radius="30px">
+      <h3><span class="c-white">Trust Signals and Technical Quick-wins: </span></h3>
+      <p><span class="c-white">We look closely for missing schema, title tag mismatches, and other technical issues that trip up the search robots. You don’t need to know what all this means, but these are critical tech elements most content audits miss. </span></p>
+    </Text>
+    <Text m="20/2/28/10" d="13/4/21/14" z={5} zm={3} align="center" anim={{ animations: [{ trigger: 'hover', duration: 0.5, ease: 'spring', bounce: 0.3, frames: [{ sx: 1.05, sy: 1.05 }] }] }} bg="var(--lightAccent)" padding="6% 6% 6% 6%" radius="30px">
+      <h3><span class="c-white">Your Best Primary Keyword: </span></h3>
+      <p><span class="c-white">Most clients aren’t sure what their #1 keyword should be. (Or don’t really know what a keyword is…and that’s ok!) We’re taking the guesswork out for you and telling you exactly what terms to prioritize so you can start optimizing. You’ll also get a list of other keywords competitors are using that you may be missing. </span></p>
+    </Text>
+    <Text m="28/2/34/10" d="13/14/21/24" z={6} zm={4} align="center" anim={{ animations: [{ trigger: 'hover', duration: 0.5, ease: 'spring', bounce: 0.3, frames: [{ sx: 1.05, sy: 1.05 }] }] }} bg="var(--accent)" padding="6% 6% 6% 6%" radius="30px">
+      <h3>Specific fixes, not suggestions: </h3>
+      <p>In the world of SEO, details make the difference. Rather than telling you to improve your headline, we’ll tell you which phrase to use and why it will outperform your current web presence. </p>
+    </Text>
+    <Text m="35/2/40/10" d="22/5/24/23" z={2} align="center" alignM="start">
+      <h3 class="ta-center"><span class="c-black">If you’re not quite sure what some of this stuff means, you’re in the right place. </span><span class="c-lightAccent">The SEO Report Card</span><span class="c-black"> is the perfect place to start your SEO journey!</span></h3>
+    </Text>
+  </Section>
+
+  <Section height="medium" grid={{ rows: [28, 13], rowGap: 11, colGap: 11 }}>
+    <Img m="1/2/13/10" d="1/18/14/25" z={3} align="center" anim={{ animations: [{ trigger: 'hover', duration: 0.4, ease: 'ease-out', frames: [{ r: 4 }, {  }] }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={jphelloseoheadshots0626Staborstudios63} alt="A woman with shoulder-length wavy brown hair, wearing a green button-up shirt and blue jeans, smiling with red lipstick, gold chain necklace, and tattoos on her arms, standing in front of brown curtains." radius="30px" sizes="(max-width: 767px) 100vw, 29vw" />
+    <Text m="14/2/16/10" d="2/3/4/11" z={2}>
+      <h2>Your Q’s, Our A’s</h2>
+    </Text>
+    <Accordion m="16/2/28/10" d="4/3/13/16" z={1} items={[{ title: 'How do you pick my primary keyword?', html: '<p>We find the highest-value keyword your page can realistically rank for, factoring in search volume, difficulty, and intent. Every grade, finding, and recommendation in your report is based on that target keyword, so you are optimizing for something real searchers are typing, not guessing.</p>' }, { title: 'What kind of changes will I get?', html: '<p>Specific ones. Instead of "consider improving your headings," your report tells you exactly what to change and why, like the exact phrase to use in your H1, where to add a missing keyword in your body copy, or what schema markup to implement. Each recommendation is ranked by impact so you know what to tackle first.</p>' }, { title: 'Will this help me show up in AI search, too?', html: '<p>Yes. The report card looks at the signals that matter for both Google and AI-driven search, including structured data, trust signals like testimonials and author credibility, and the content depth AI tools pull from when answering questions. The fixes in your report help your page get found in both.</p>' }, { title: 'What should I do after I get my report?', html: '<p>If you want hands-on support to help implement some of the changes or go into further detail, we recommend booking a 60-minute strategy session. We’ll use that time together to put your report card into action.</p>' }]} />
+  </Section>
+</Layout>

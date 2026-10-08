@@ -1,0 +1,36 @@
+---
+import Block, { type Placement } from '../Block.astro';
+
+interface Props extends Placement {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  size?: 'small' | 'medium' | 'large';
+  /** horizontal alignment when the button doesn't stretch */
+  position?: 'left' | 'center' | 'right';
+  /** fill the whole grid cell (the default for buttons in the grid) */
+  stretch?: boolean;
+  /** don't grow to fill the cell vertically */
+  noFill?: boolean;
+  newTab?: boolean;
+  /** extra class for one-off styling */
+  btnClass?: string;
+}
+
+const { href, variant = 'primary', size = 'medium', position = 'center', stretch = true, noFill, newTab, btnClass, ...place } = Astro.props;
+const JUSTIFY = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+---
+
+<Block {...place}>
+  <div
+    class:list={['button-block', { 'button-block--stretch': stretch }]}
+    style={`--btn-align: ${JUSTIFY[position]}${noFill ? '; --fill: 0' : ''}`}
+    data-reveal="button"
+  >
+    <a
+      class:list={['btn', `btn--${variant}`, `btn--${size}`, btnClass]}
+      href={href}
+      target={newTab ? '_blank' : undefined}
+      rel={newTab ? 'noopener' : undefined}
+    ><slot /></a>
+  </div>
+</Block>

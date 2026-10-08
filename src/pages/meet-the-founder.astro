@@ -1,0 +1,90 @@
+---
+import Button from '../components/blocks/Button.astro';
+import Img from '../components/blocks/Img.astro';
+import Layout from '../layouts/Layout.astro';
+import LogoMarquee from '../components/LogoMarquee.astro';
+import Section from '../components/Section.astro';
+import Shape from '../components/blocks/Shape.astro';
+import Text from '../components/blocks/Text.astro';
+import img1Eaba97b2 from '../assets/images/1-eaba97b2.png';
+import img2F2f249dd from '../assets/images/2-f2f249dd.png';
+import athena from '../assets/images/athena.png';
+import boydInnovation from '../assets/images/boyd-innovation.png';
+import cultivateAdvisors from '../assets/images/cultivate-advisors.png';
+import forbesAdvisor from '../assets/images/forbes-advisor.png';
+import growthSummit from '../assets/images/growth-summit.png';
+import helloseoPress1 from '../assets/images/helloseo-press-1.png';
+import jphelloseoheadshots0626Staborstudios107 from '../assets/images/jphelloseoheadshots0626-staborstudios-107.jpg';
+import jphelloseoheadshots0626Staborstudios35 from '../assets/images/jphelloseoheadshots0626-staborstudios-35.jpg';
+import logoTransparent1 from '../assets/images/logo-transparent-1.png';
+import moz from '../assets/images/moz.png';
+import msn from '../assets/images/msn.png';
+import pattern2 from '../assets/images/pattern-2.png';
+import sitebulb from '../assets/images/sitebulb.png';
+import socialShare6a8726b0 from '../assets/images/social-share-6a8726b0.png';
+import southCarolinaPublicRadio from '../assets/images/south-carolina-public-radio.png';
+import southCarolina from '../assets/images/south-carolina.png';
+import speaker2 from '../assets/images/speaker-2.jpg';
+import theDames from '../assets/images/the-dames.png';
+import unitedWay from '../assets/images/united-way.png';
+import womenInTechSeo from '../assets/images/women-in-tech-seo.png';
+---
+
+<Layout title="About Jade Pruett  | HelloSEO" description="Meet Jade Pruett, founder of HelloSEO, and learn how our SEO strategies connect therapists with clients at the right moment. Discover our approach to digital marketing." ogImage={socialShare6a8726b0}>
+  <Section bg={{ src: pattern2, overlay: 0.15, parallax: true, eager: true }} grid={{ rows: [32, 29], rowGap: 0, colGap: 30 }}>
+    <Img m="2/2/20/10" d="4/15/27/25" z={6} zm={5} align="center" anim={{ animations: [{ trigger: 'appear', duration: 0.4, ease: 'ease-out', frames: [{ x: '179px' }, {  }], replay: false, threshold: 0 }, { trigger: 'hover', duration: 0.4, ease: 'ease-out', frames: [{ r: 4 }, {  }] }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={jphelloseoheadshots0626Staborstudios107} alt="Smiling woman with brown hair, blue eyes, wearing gold earrings, a gold necklace, and a black button-up shirt standing against a plain background." radius="30px" sizes="(max-width: 767px) 100vw, 42vw" eager />
+    <Text m="22/2/31/10" d="5/3/26/14" z={3} zm={2} align="center" alignM="start">
+      <h1>Jade Pruett </h1>
+      <p class="large"><span class="c-lightAccent"><strong>HelloSEO FOUNDER | MetaMonster CO-FOUNDER | SEO &amp; SEARCH STRATEGIST</strong></span></p>
+      <p>Jade Pruett launched HelloSEO in 2020 as a side hustle while working in-house in SEO for major publishers including CNN and Business Insider. She loved seeing how the SEO strategies she learned at big companies could make a huge difference for small businesses.</p>
+      <p>In 2022, she took HelloSEO full time. Since then, she has grown HelloSEO into a full-service agency, worked with hundreds of businesses, and continued to see firsthand the impact strong search visibility can have.</p>
+      <p>Jade mentors through Women in Tech SEO and the Boyd Innovation Center and recently served as an Entrepreneur in Residence at the University of South Carolina's Darla Moore School of Business.</p>
+      <p>She is featured in Majestic's <em>SEOin2026</em> and was named to MSN's list of self-made women to watch in 2026. Jade speaks on SEO, artificial intelligence, bootstrapping, and the increasingly important role human connection plays in a search landscape shaped by technology.</p>
+    </Text>
+  </Section>
+
+  <Section theme="light" grid={{ rows: [2, 2], rowGap: 11, colGap: 11 }}>
+    <Text m="1/2/3/10" d="2/4/3/24" z={1} alignM="center">
+      <p class="large ta-center"><span class="c-white"><strong>PRESS FEATURES:</strong></span></p>
+    </Text>
+  </Section>
+
+  <LogoMarquee theme="light" padding={[2, 2]}
+    logos={[
+      { src: sitebulb, alt: 'Empty white background with no objects or details', href: 'https://sitebulb.com/resources/guides/seo-in-2025-trends-to-look-out-for/' },
+      { src: img1Eaba97b2, alt: 'The image contains text that reads "VOROBOTOM."', href: 'https://voicesofsearch.com/episode/https-voicesofsearch-com-episode-measuring-seo-impact-beyond-rankings-and-traffic/' },
+      { src: forbesAdvisor, alt: 'Forbes Advisor logo in white text on black background', href: 'https://www.forbes.com/advisor/business/software/website-optimization-tips/' },
+      { src: womenInTechSeo, alt: 'Women in tech SEO logo', href: 'https://www.womenintechseo.com/interviews/jade-pruett/' },
+      { src: img2F2f249dd, alt: 'Press Hook logo with text', href: 'https://www.presshook.com/blog/how-pr-specialists-can-use-ahrefs-to-track-proi' },
+      { src: moz, alt: 'Moz logo in white text on a black background', href: 'https://moz.com/blog/networking-as-an-introvert' },
+      { src: msn, alt: 'MSN logo with butterfly icon on black background', href: 'http://msn.com/en-us/money/small-business/top-10-self-made-women-to-watch-in-2026/ar-AA23d4O3' },
+      { src: unitedWay, alt: 'United Way logo with circular emblem and text', href: 'https://www.uway.org/events/unlocking-ai-opportunities-challenges-and-road-ahead' },
+      { src: southCarolinaPublicRadio, alt: 'South Carolina Pride logo with a heart-shaped symbol', href: 'https://www.southcarolinapublicradio.org/show/south-carolina-business-review/2025-06-26/ai-and-seo' }
+    ]}
+  />
+
+  <LogoMarquee theme="dark" padding={[18, 2]} bg={{ src: speaker2, overlay: 0.7, focal: '53.7% 34.4%' }} title="<p>SPEAKING APPEARANCES:</p>"
+    logos={[
+      { src: southCarolina, alt: 'University of South Carolina logo with text' },
+      { src: athena, alt: 'A logo featuring an owl with spread wings, surrounded by laurel branches', href: 'https://www.athenaac.com/blog/how-to-get-found-online-what-we-learned-from-jade-pruett-at-our-may-skill-lab' },
+      { src: boydInnovation, alt: 'Sign for Boyd Innovation Center, home of Cenovus.', href: 'https://www.boydinnovation.org/blog/startup-sprint-spring-2026' },
+      { src: theDames, alt: 'Text that reads \'Dances\' inside a white circle on a black background.', href: '/' },
+      { src: cultivateAdvisors, alt: 'Cultivate Advisors logo on a black background with white text', href: '/' },
+      { src: growthSummit, alt: 'Logo for the Growth Summit 2022 featuring a stylized upward arrow or mountain peak design.', href: 'https://www.growth-summit.org/speaker-alumni/' },
+      { src: helloseoPress1, alt: 'Clemson University logo on a black background', href: 'https://news.clemson.edu/brook-t-smith-launchpad-hosts-its-first-annual-women-in-entrepreneurship-symposium/' }
+    ]}
+  />
+
+  <Section height="medium" grid={{ rows: [37, 15], rowGap: 11, colGap: 11 }}>
+    <Img m="1/2/15/10" d="1/4/16/11" z={2} zm={3} align="center" anim={{ animations: [{ trigger: 'appear', duration: 0.4, ease: 'ease-out', frames: [{ x: '179px' }, {  }], replay: false, threshold: 0 }, { trigger: 'hover', duration: 0.4, ease: 'ease-out', frames: [{ r: -4 }, {  }] }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={jphelloseoheadshots0626Staborstudios35} alt="A woman sitting in a chair with brown curtains in the background, smiling and looking to her right. She is wearing a blue embroidered blouse, white earrings, gold necklace, a ring, and has painted red nails." radius="30px" sizes="(max-width: 767px) 100vw, 29vw" />
+    <Img m="11/5/16/10" d="11/8/13/12" z={5} align="center" anim={{ base: { sx: 0.95, sy: 0.95 }, animations: [{ trigger: 'loop', duration: 2, ease: 'ease-in-out', frames: [{ y: '5%', sx: 0.9, sy: 0.9 }], alternate: true, iterations: 1 }] }} scale={0.95} src={logoTransparent1} alt="A man playing chess with a woman in a well-lit room" fit="contain" sizes="(max-width: 767px) 63vw, 17vw" />
+    <Shape m="12/5/15/10" d="11/8/13/12" z={4} align="center" fill="#fff" radius="10px" />
+    <Text m="16/2/35/10" d="2/13/12/24" z={1}>
+      <p>Jade is also a co-founder of MetaMonster, a content optimization platform built for SEO agencies and professionals.</p>
+      <p>Jade’s relationship with MetaMonster began as a customer. She was an early power user of the product and quickly became a trusted source of feedback, sharing ideas about search, product development, and growth with the founding team.</p>
+      <p>Over time, those conversations turned into a deeper collaboration. Jade began helping shape how MetaMonster approached SEO work and served its users. One founder even joined HelloSEO as an intern to better understand the day-to-day challenges of agency work. It became clear that the team’s values aligned and that there was more they could build together.</p>
+      <p>Jade joined MetaMonster as a co-founder in May 2026. Today, she serves as the team's resident SEO subject-matter expert, growth marketer, and advocate for the search community as they build tools designed for the next era of search.</p>
+    </Text>
+    <Button m="36/2/38/10" d="13/13/15/19" z={3} zm={2} align="center" href="/contact">Let’s Work Together</Button>
+  </Section>
+</Layout>

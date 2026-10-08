@@ -1,0 +1,19 @@
+---
+import Block, { type Placement } from '../Block.astro';
+import { socialLinks } from '../../data/social';
+type Props = Placement;
+---
+
+<Block {...Astro.props}>
+  <nav class="social-links" aria-label="Social">
+    {
+      socialLinks.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}>
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d={s.mask} />
+          </svg>
+        </a>
+      ))
+    }
+  </nav>
+</Block>

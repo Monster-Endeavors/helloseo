@@ -1,0 +1,20 @@
+---
+import Button from '../components/blocks/Button.astro';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Text from '../components/blocks/Text.astro';
+import blueIvoryPurpleCorners from '../assets/images/blue-ivory-purple-corners.png';
+import socialShare6a8726b0 from '../assets/images/social-share-6a8726b0.png';
+---
+
+<Layout title="404 | Enhance Your SEO Today — Get Started Now | HelloSEO" description="Explore HelloSEO's services including SEO strategies, digital PR, paid Google Ads, and content expertise. Contact us for a free SEO report card." ogImage={socialShare6a8726b0} headerTheme="white">
+  <Section theme="white" height="small" bg={{ src: blueIvoryPurpleCorners, overlay: 0.15, eager: true }} grid={{ rows: [15, 17], rowGap: 11, colGap: 11 }}>
+    <Text m="4/3/11/9" d="4/11/11/17" z={2} zm={1} align="center" alignM="start">
+      <div class="scaled-text-container"><span class="scaled-text">
+      <h1 class="ta-center">404</h1></span>
+      </div>
+      <p class="large ta-center"><strong>Sorry, this page cannot be found.</strong></p>
+    </Text>
+    <Button m="12/3/14/9" d="12/11/14/17" z={3} zm={2} align="center" href="/home">Visit homepage</Button>
+  </Section>
+</Layout>

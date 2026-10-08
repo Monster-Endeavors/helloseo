@@ -1,0 +1,79 @@
+/* ---------------------------------------------------------------------------
+   Blog
+   --------------------------------------------------------------------------- */
+.blog-section { min-height: 66vh; }
+.blog-section > .section__content { display: block; }
+
+/* list */
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+  box-sizing: border-box;
+  padding: var(--site-gutter);
+}
+.blog-card { display: flex; flex-direction: column; }
+.blog-card__image {
+  position: relative;
+  display: block;
+  margin: 0 0 40px; /* image gap + the (hidden) meta row */
+  overflow: hidden;
+}
+.blog-card__image img { display: block; width: 100%; height: auto; }
+.blog-card__summary { display: flex; flex-direction: column; }
+.blog-card__title {
+  --fs: 1.8;
+  margin: 0 0 30px;
+  line-height: 1.4em;
+}
+.blog-card__title a { color: inherit; }
+@media (max-width: 767px) {
+  .blog-list { grid-template-columns: 1fr; }
+}
+
+/* post */
+.blog-post { box-sizing: border-box; width: 100%; padding: var(--site-gutter); }
+.blog-post__header,
+.blog-post__content { max-width: 72vw; margin: 0 auto; }
+.blog-post__content { display: flow-root; }
+.blog-post__header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 70px;
+  text-align: center;
+}
+.blog-post__meta {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 32px;
+  font-family: var(--font-meta);
+  font-size: 14.272px;
+  line-height: 1.2em;
+}
+.blog-post__title {
+  --fs: var(--h1-size);
+  margin: 0;
+  line-height: 1.4em;
+}
+.blog-post__content { margin-bottom: 43.2px; }
+@media (max-width: 767px) {
+  .blog-post__header,
+  .blog-post__content { max-width: 100%; }
+}
+
+/* previous / next post */
+.post-pagination {
+  display: flex;
+  min-height: 0;
+  padding: 3vw var(--site-gutter);
+  background-color: var(--bg);
+  color: var(--h2);
+}
+.post-pagination__link { display: flex; flex-direction: column; max-width: 50%; gap: 6px; }
+.post-pagination__link--next { margin-left: auto; text-align: right; }
+.post-pagination__label { font-family: var(--font-meta); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+.post-pagination__title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 500; }
+@media (max-width: 767px) {
+  .post-pagination { padding: 3vw 6vw; }
+}

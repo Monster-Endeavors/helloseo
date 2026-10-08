@@ -1,0 +1,31 @@
+---
+import type { ImageMetadata } from 'astro';
+import Block, { type Placement } from '../Block.astro';
+
+interface Props extends Placement {
+  /** card background: a colour, or `true` for the section theme's card colour */
+  bg?: string | true;
+  stroke?: { color: string; width: string };
+  padding?: string;
+  radius?: string;
+  /** colour of list bullets */
+  bulletColor?: string;
+  /** small image used instead of list bullets */
+  bulletIcon?: ImageMetadata;
+}
+
+const { bg, stroke, padding, radius, bulletColor, bulletIcon, ...place } = Astro.props;
+const vars: string[] = [];
+if (typeof bg === 'string') vars.push(`--text-block-bg: ${bg}`);
+if (stroke) vars.push('--stroke-style: solid', `--stroke-width: ${stroke.width}`, `--text-block-stroke: ${stroke.color}`);
+if (padding) vars.push(`--padding: ${padding}`);
+if (radius) vars.push(`--radius: ${radius}`);
+if (bulletColor) vars.push(`--bullet-color: ${bulletColor}`);
+if (bulletIcon) vars.push(`--bullet-icon: url(${bulletIcon.src})`);
+---
+
+<Block {...place} style={radius ? `border-radius: ${radius}` : undefined}>
+  <div class:list={['text-block', { 'text-block--bg': bg, 'text-block--icon-bullets': bulletIcon }]} style={vars.join('; ') || undefined}>
+    <div class="rte"><slot /></div>
+  </div>
+</Block>

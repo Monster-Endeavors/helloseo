@@ -1,0 +1,51 @@
+---
+import Button from './blocks/Button.astro';
+import Img from './blocks/Img.astro';
+import Section from './Section.astro';
+import SocialLinks from './blocks/SocialLinks.astro';
+import Text from './blocks/Text.astro';
+import blue from '../assets/images/blue.png';
+import pattern1 from '../assets/images/pattern-1.png';
+
+interface Props {
+  /** divider height of the page's last section */
+  offset?: string;
+}
+const { offset } = Astro.props;
+---
+
+<footer class="site-footer" style={offset ? `--footer-offset: ${offset}` : undefined}>
+  <Section theme="dark" height="small" grid={{ rows: [17, 20], rowGap: 11, colGap: 11 }} class="footer-nav">
+    <Text m="9/2/11/6" d="1/15/3/19" z={3}>
+      <h4>Connect</h4>
+    </Text>
+    <Text m="9/6/11/10" d="1/21/3/25" z={4}>
+      <h4>Get In Touch</h4>
+    </Text>
+    <Text m="1/6/9/10" d="1/8/8/12" z={2}>
+      <h4>Work With Us</h4>
+      <p class="small"><a href="/seo-power-hour"><span class="c-white">SEO Power Hour</span></a></p>
+      <p class="small"><a href="/done-for-you-seo-aeo"><span class="c-white">Done-For-You SEO &amp; AEO<br></span></a></p>
+      <p class="small"><a href="/digital-pr"><span class="c-white">Digital PR<br></span></a></p>
+      <p class="small"><a href="/paid-google-ads"><span class="c-white">Paid Google Ads</span></a></p>
+      <p class="small"><a href="/content-hub"><span class="c-white">Content Hub</span></a></p>
+    </Text>
+    <Text m="1/2/7/6" d="1/2/7/6" z={1}>
+      <h4>Explore</h4>
+      <p class="small"><a href="/results"><span class="c-white">Results</span></a></p>
+      <p class="small"><a href="/meet-the-founder"><span class="c-white">Meet The Founder</span></a></p>
+      <p class="small"><a href="/meet-the-team"><span class="c-white">Meet The Team<br></span></a></p>
+      <p class="small">Free <a href="/seo-report-card"><span class="c-white">SEO Report Card</span></a></p>
+      <p class="small"><a href="/blog"><span class="c-white">Blog</span></a></p>
+    </Text>
+    <Button m="11/6/13/10" d="3/21/5/25" z={4} align="center" href="/contact">Contact</Button>
+    <SocialLinks m="11/2/13/6" d="2/15/4/19" z={5} align="center" alignM="start" />
+    <Img m="14/1/18/11" d="11/2/21/26" z={3} align="center" src={blue} alt="" fit="contain" href="/home" sizes="(max-width: 767px) 100vw, 100vw" />
+  </Section>
+
+  <Section bg={{ src: pattern1, overlay: 0.15 }} grid={{ rows: [4, 2], rowGap: 11, colGap: 11 }}>
+    <Text m="2/2/5/10" d="1/2/3/22" z={1} align="center" alignM="start">
+      <p class="small">©2026 All Rights Reserved. HelloSEO, LLC. <a href="/privacy-policy">Privacy Policy</a>. <a href="/fulfillment-policy">Fulfillment Policy</a>. Brand &amp; Website by <a href="https://www.electriccollab.com/"><u>Electric Collab</u></a></p>
+    </Text>
+  </Section>
+</footer>

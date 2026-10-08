@@ -1,0 +1,170 @@
+---
+/**
+ * Contact-style form rendered from a field definition (see src/data/forms.ts).
+ * Submissions are POSTed as JSON to PUBLIC_FORM_ENDPOINT (e.g. a Formspree /
+ * Basin / serverless endpoint); see src/scripts/form.ts.
+ */
+import Block, { type Placement } from '../Block.astro';
+
+type Field = {
+  id: string;
+  type: string;
+  title: string;
+  required?: boolean;
+  placeholder?: string;
+  options?: readonly string[];
+  followUpQuestions?: readonly { id: string; type: string; title: string; required?: boolean; condition?: { value: string } }[];
+};
+
+interface FormDef {
+  name: string;
+  fields: readonly Field[];
+  submitText: string;
+  successRedirect?: string;
+  submissionHtml?: string;
+  design?: { buttonAlignment?: string };
+}
+
+interface Props extends Placement {
+  form: FormDef;
+  /** card background (e.g. "#fff") */
+  bg?: string;
+  /** card outline colour */
+  stroke?: string;
+  radius?: string;
+  padding?: string;
+}
+
+const { form, bg, stroke, radius, padding, ...place } = Astro.props;
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const card = Boolean(bg);
+const vars: string[] = [];
+if (bg) vars.push(`--form-bg: ${bg}`);
+if (stroke) vars.push(`--form-stroke: ${stroke}`);
+if (radius) vars.push(`--form-radius: ${radius}`);
+if (padding) vars.push(`--form-padding: ${padding}`);
+const fid = (f: { id: string }) => `${f.id}-field`;
+---
+
+<Block {...place} style={radius ? `border-radius: ${radius}` : undefined}>
+  <div class:list={['form-block', { 'form-block--card': card }]} style={vars.join('; ') || undefined}>
+    <form
+      class="form"
+      data-form
+      data-endpoint={endpoint}
+      data-form-name={form.name}
+      data-redirect={form.successRedirect || undefined}
+      novalidate
+    >
+      <div class="form__fields">
+        {
+          form.fields.map((f) => {
+            const req = f.required ? <span class="form-field__req">(required)</span> : null;
+            if (f.type === 'name')
+              return (
+                <fieldset class="form-field form-field--name" data-required={f.required ? '' : undefined} data-title={f.title}>
+                  <legend class="form-field__title">{f.title}</legend>
+                  {[
+                    ['fname', 'First Name', 'given-name'],
+                    ['lname', 'Last Name', 'family-name'],
+                  ].map(([name, label, auto]) => (
+                    <div class="form-field__sub">
+                      <label class="form-field__caption" for={`${f.id}-${name}`}>
+                        <span>
+                          {label}
+                          {req}
+                        </span>
+                      </label>
+                      <input class="form-input" id={`${f.id}-${name}`} name={`${f.title} — ${label}`} type="text" autocomplete={auto} required={f.required} />
+                    </div>
+                  ))}
+                  <p class="form-field__error" hidden />
+                </fieldset>
+              );
+            if (f.type === 'checkbox' || f.type === 'radio')
+              return (
+                <fieldset class="form-field form-field--options" data-required={f.required ? '' : undefined} data-title={f.title}>
+                  <legend class="form-field__title">
+                    <span>{f.title}</span>
+                    {req}
+                  </legend>
+                  {f.options?.map((o) => (
+                    <div class="form-option">
+                      <label>
+                        <input class={`form-${f.type}`} type={f.type} name={f.title} value={o} />
+                        <span>{o}</span>
+                      </label>
+                    </div>
+                  ))}
+                  <p class="form-field__error" hidden />
+                </fieldset>
+              );
+            return (
+              <>
+                <div class:list={['form-field', `form-field--${f.type}`]} data-required={f.required ? '' : undefined} data-title={f.title}>
+                  <label class="form-field__title" for={fid(f)}>
+                    <span>{f.title}</span>
+                    {req}
+                  </label>
+                  {f.type === 'textarea' ? (
+                    <textarea class="form-input" id={fid(f)} name={f.title} required={f.required} placeholder={f.placeholder || undefined} />
+                  ) : f.type === 'select' ? (
+                    <div class="form-select">
+                      <select class="form-input is-placeholder" id={fid(f)} name={f.title} required={f.required} data-follow-up={f.followUpQuestions?.length ? '' : undefined}>
+                        <option value="" disabled selected hidden>
+                          {f.placeholder || 'Select an option'}
+                        </option>
+                        {f.options?.map((o) => <option value={o}>{o}</option>)}
+                      </select>
+                      <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true">
+                        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M0.439453 1.49825L1.56057 0.501709L9.00001 8.87108L16.4395 0.501709L17.5606 1.49825L9.00001 11.1289L0.439453 1.49825Z" />
+                      </svg>
+                    </div>
+                  ) : f.type === 'website' ? (
+                    <div class="form-prefixed">
+                      <span class="form-prefix" aria-hidden="true">http://</span>
+                      <input class="form-input" id={fid(f)} name={f.title} type="url" inputmode="url" autocomplete="url" required={f.required} />
+                    </div>
+                  ) : (
+                    <input
+                      class="form-input"
+                      id={fid(f)}
+                      name={f.title}
+                      type={f.type === 'email' ? 'email' : 'text'}
+                      autocomplete={f.type === 'email' ? 'email' : undefined}
+                      required={f.required}
+                      placeholder={f.placeholder || undefined}
+                    />
+                  )}
+                  <p class="form-field__error" hidden />
+                </div>
+                {f.followUpQuestions?.map((q) => (
+                  <div class="form-field form-field--text" data-follow-up-of={fid(f)} data-condition={q.condition?.value} data-title={q.title} data-required={q.required ? '' : undefined} hidden>
+                    <label class="form-field__title" for={fid(q)}>
+                      <span>{q.title}</span>
+                    </label>
+                    <input class="form-input" id={fid(q)} name={q.title} type="text" />
+                  </div>
+                ))}
+              </>
+            );
+          })
+        }
+        <!-- spam trap -->
+        <div class="form__trap" aria-hidden="true">
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+        </div>
+      </div>
+      <div class:list={['form__actions', { 'form__actions--stretch': form.design?.buttonAlignment === 'stretch' }]}>
+        <button class="btn btn--primary form__submit" type="submit">{form.submitText}</button>
+      </div>
+      <p class="form__status" role="status" hidden></p>
+    </form>
+    {form.submissionHtml && <div class="form__success" hidden set:html={form.submissionHtml} />}
+  </div>
+</Block>
+
+<script>
+  import { initForms } from '../../scripts/form';
+  initForms();
+</script>

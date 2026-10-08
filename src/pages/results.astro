@@ -1,0 +1,78 @@
+---
+import Button from '../components/blocks/Button.astro';
+import Img from '../components/blocks/Img.astro';
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Shape from '../components/blocks/Shape.astro';
+import StatsList from '../components/StatsList.astro';
+import Text from '../components/blocks/Text.astro';
+import img5 from '../assets/images/5.png';
+import img65 from '../assets/images/65.png';
+import gradient36abaf04 from '../assets/images/gradient-36abaf04.png';
+import kaboompicsCloseUpOfWomanTypingOnLaptopOn from '../assets/images/kaboompics-close-up-of-woman-typing-on-laptop-on-sofa-43378.jpg';
+import pattern1 from '../assets/images/pattern-1.png';
+import pexelsShvetsProduction7176302 from '../assets/images/pexels-shvets-production-7176302.jpg';
+import pexelsTimSamuel5838302 from '../assets/images/pexels-tim-samuel-5838302.jpg';
+import pexelsYankrukov5793808 from '../assets/images/pexels-yankrukov-5793808.jpg';
+import socialShare6a8726b0 from '../assets/images/social-share-6a8726b0.png';
+import unsplashImageU2h4br0Nls563411 from '../assets/images/unsplash-image-u2h4br0-nls-563411.jpg';
+---
+
+<Layout title="Therapy Practice SEO Results | HelloSEO" description="Discover how HelloSEO drives growth with proven SEO strategies, digital PR, and paid ads. Unlock your practice's potential today." ogImage={socialShare6a8726b0}>
+  <Section bg={{ src: pattern1, overlay: 0.15, parallax: true, eager: true }} grid={{ rows: [56, 27], rowGap: 0, colGap: 30 }}>
+    <Text m="4/2/6/10" d="4/3/6/15" z={1} align="end" alignM="start">
+      <p class="large"><strong>RESULTS</strong></p>
+    </Text>
+    <Text m="7/2/19/10" d="7/3/16/15" z={3} zm={2} align="center" alignM="start">
+      <h1>From one small business to another, we know that building a <span class="c-lightAccent">successful practice</span> takes time and support.</h1>
+    </Text>
+    <Text m="20/2/26/10" d="17/3/20/14" z={9} zm={8}>
+      <p>When you work with HelloSEO, you get both. Time back to serve clients and mentor clinicians, and support so that your practice shows up where your ideal clients are searching.</p>
+    </Text>
+    <Button m="27/2/29/7" d="21/3/23/8" z={5} zm={4} align="center" href="/contact">Get started</Button>
+    <Img m="30/6/39/10" d="15/15/24/19" z={7} zm={6} align="center" anim={{ animations: [{ trigger: 'appear', duration: 0.4, ease: 'ease-out', frames: [{ y: '-40px' }, {  }], replay: false, threshold: 0 }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={img65} alt="Young woman with curly hair smiling, sitting on a chair in an office with plants and shelves in the background." focal="46.8% 13.6%" radius="30px" sizes="(max-width: 767px) 50vw, 17vw" eager />
+    <Img m="30/2/39/6" d="4/15/14/19" z={8} zm={7} align="center" anim={{ animations: [{ trigger: 'appear', duration: 0.4, ease: 'ease-out', frames: [{ y: '75px' }, {  }], replay: false, threshold: 0 }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={img5} alt="A woman sitting on a gray couch, sneezing into a tissue, with a neutral background of glass-paneled doors and framed artwork." radius="30px" sizes="(max-width: 767px) 50vw, 17vw" eager />
+    <Img m="40/2/54/10" d="4/19/24/25" z={6} zm={5} align="center" anim={{ animations: [{ trigger: 'appear', duration: 0.4, ease: 'ease-out', frames: [{ x: '179px' }, {  }], replay: false, threshold: 0 }] }} outline={{ border: '4px solid #fff', radius: '34px' }} src={pexelsShvetsProduction7176302} alt="A woman speaking in a small group discussion with four seated women in a cozy room with soft lighting, a lampshade, curtains, and plants." radius="30px" sizes="(max-width: 767px) 100vw, 25vw" eager />
+  </Section>
+
+  <StatsList id="counter" theme="bright" padding={[6.6, 6.6]}
+    stats={[
+      { value: 240, suffix: '+', label: '<p>CLIENTS SERVED</p>' },
+      { value: 42, suffix: '%', label: '<p>AVERAGE INCREASE IN ORGANIC TRAFFIC<br>(year over year)</p>' },
+      { value: 48000, separator: ',', label: '<p>QUALIFIED LEADS BROUGHT IN ACROSS CLIENTS</p>' }
+    ]}
+  />
+
+  <Section height="small" grid={{ rows: [44, 25], rowGap: 11, colGap: 30 }}>
+    <Shape m="5/2/15/10" d="5/2/18/10" z={1} align="center" radius="20px" />
+    <Img m="1/2/7/10" d="2/2/9/10" z={2} align="center" src={kaboompicsCloseUpOfWomanTypingOnLaptopOn} alt="Person sitting on a black leather sofa using a silver laptop, wearing a white button-up shirt with rolled sleeves and leopard print pants, on a beige rug with black dots." focal="80% 34.4%" radius="20px 20px 0px 0px" sizes="(max-width: 767px) 100vw, 33vw" />
+    <Text m="8/3/11/9" d="10/3/14/9" z={3}>
+      <h3><span class="c-white">Chicago-Based Therapy Practice</span></h3>
+      <p><span class="c-white">Cut <strong>Ad Spend by 50%</strong> While Boosting Search Traffic by 153%</span></p>
+    </Text>
+    <Button m="12/3/14/9" d="18/3/20/9" z={4} zm={9} align="center" href="/case-study-1">Learn more</Button>
+    <Shape m="19/2/30/10" d="5/10/18/18" z={2} zm={4} align="center" fill="var(--darkAccent)" radius="20px" />
+    <Img m="16/2/22/10" d="2/10/9/18" z={3} zm={5} align="center" src={pexelsTimSamuel5838302} alt="Two women sitting at a wooden table, holding hands, with a laptop in front of them. One woman has long dark hair, and the other has short, curly blonde hair and visible tattoos." radius="20px 20px 0px 0px" sizes="(max-width: 767px) 100vw, 33vw" />
+    <Text m="23/3/26/9" d="10/11/15/17" z={4} zm={6}>
+      <h3><span class="c-white">Sex &amp; LGBTQIA Therapy Practice</span></h3>
+      <p><span class="c-white"><strong>72% increase</strong> in leads (from Google and AI) after six months!</span></p>
+    </Text>
+    <Button m="27/3/29/9" d="18/11/20/17" z={5} zm={11} align="center" href="/case-study-2">Learn more</Button>
+    <Shape m="35/2/45/10" d="5/18/18/26" z={3} zm={7} align="center" fill="var(--mauve)" radius="20px" />
+    <Img m="31/2/37/10" d="2/18/9/26" z={4} zm={8} align="center" src={pexelsYankrukov5793808} alt="Two people standing close to each other with one person's hand on their hip and the other person's hand near their waist, both wearing casual shirts." radius="20px 20px 0px 0px" sizes="(max-width: 767px) 100vw, 33vw" />
+    <Text m="38/3/41/9" d="10/19/14/25" z={5} zm={10}>
+      <h3><span class="c-white">Pelvic Floor Therapist</span></h3>
+      <p><span class="c-white"><strong>252 New Clients </strong>for SEO in six Months! </span></p>
+    </Text>
+    <Button m="42/3/44/9" d="18/19/20/25" z={6} zm={12} align="center" href="/case-study-3">Learn more</Button>
+  </Section>
+
+  <Section theme="white" inset grid={{ rows: [15, 14], rowGap: 11, colGap: 11 }}>
+    <Img m="2/2/14/10" d="2/2/13/26" z={1} align="center" outline={{ border: '4px solid #d34320', radius: '34px' }} src={unsplashImageU2h4br0Nls563411} alt="Living room with two mustard-colored velvet armchairs, a large potted plant between them, white curtains in the background, two tall floor lamps on either side, a small cabinet on the left, a color calibration chart near one armchair, and a clapperboard on the right armchair." radius="30px" overlay={{ opacity: 1, color: 'hsl(var(--black-hsl) / 0.65)' }} parallax={{ intensity: 20, rotation: 45, zoomStart: 2 }} sizes="(max-width: 767px) 100vw, 100vw" />
+    <Img m="1/4/4/8" d="1/12/4/16" z={3} align="center" anim={{ animations: [{ trigger: 'loop', duration: 2, ease: 'ease-in-out', frames: [{ y: '20%', sx: 0.95, sy: 0.95 }], alternate: true, iterations: 1 }] }} src={gradient36abaf04} alt="Illustration of a smiling cat's face with closed eyes, whiskers, and a curled tail on an orange background." fit="contain" sizes="(max-width: 767px) 50vw, 17vw" />
+    <Text m="5/3/9/9" d="5/7/8/21" z={2} align="center">
+      <h2 class="ta-center"><span class="c-white">Ready to be the next success story?</span></h2>
+    </Text>
+    <Button m="10/3/12/9" d="8/11/10/17" z={4} align="center" href="/contact">Start the conversation</Button>
+  </Section>
+</Layout>

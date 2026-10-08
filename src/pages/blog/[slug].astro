@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const date = post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<Layout title={`${post.data.title} — HelloSEO`} description={post.data.description} ogImage={post.data.socialImage ?? post.data.image} headerTheme="white-bold">
+  <section class="section blog-section" data-theme="white-bold">
+    <div class="section__border"></div>
+    <div class="section__content">
+      <article class="blog-post">
+        <header class="blog-post__header">
+          <div class="blog-post__meta" data-reveal="text">
+            <time datetime={post.data.date.toISOString()}>{date}</time>
+          </div>
+          <h1 class="blog-post__title">{post.data.title}</h1>
+        </header>
+        <div class="blog-post__content">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </section>
+  <nav class="post-pagination" data-theme="white-bold" aria-label="More posts">
+    {
+      older && (
+        <a class="post-pagination__link post-pagination__link--prev" href={`/blog/${older.id}`}>
+          <span class="post-pagination__label">Previous</span>
+          <span class="post-pagination__title">{older.data.title}</span>
+        </a>
+      )
+    }
+    {
+      newer && (
+        <a class="post-pagination__link post-pagination__link--next" href={`/blog/${newer.id}`}>
+          <span class="post-pagination__label">Next</span>
+          <span class="post-pagination__title">{newer.data.title}</span>
+        </a>
+      )
+    }
+  </nav>
+</Layout>

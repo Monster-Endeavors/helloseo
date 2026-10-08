@@ -1,0 +1,77 @@
+---
+/** Testimonial cards in an infinite carousel (3 / 2 / 1 per view, with peeking neighbours). */
+import ListShell from './ListShell.astro';
+
+interface Testimonial {
+  quote: string;
+  author: string;
+}
+
+interface Props {
+  id?: string;
+  theme?: string;
+  padding: [number, number];
+  title?: string;
+  items: Testimonial[];
+}
+
+const { items, title, ...shell } = Astro.props;
+
+const arrow = (dir: 'left' | 'right') =>
+  dir === 'left'
+    ? ['M9.90649 16.96L2.1221 9.17556L9.9065 1.39116', 'M42.8633 9.18125L3.37868 9.18125']
+    : ['M34.1477 1.39111L41.9321 9.17551L34.1477 16.9599', 'M1.19088 9.16982H40.6755'];
+const mobileArrow = (dir: 'left' | 'right') =>
+  dir === 'left' ? ['M7.87012 13L2.00021 7L7.87012 1', 'M22.9653 7L3.03948 7'] : ['M16.1299 1L21.9998 7L16.1299 13', 'M1.03472 7H20.9605'];
+---
+
+<ListShell {...shell}>
+  <div class="carousel" data-carousel>
+    {title && <div class="list-title" set:html={title} />}
+    <div class="carousel__gutter">
+      <div class="carousel__viewport">
+        <ul class="carousel__slides">
+          {
+            items.map((t) => (
+              <li class="carousel__slide" data-reveal="fade">
+                <div class="carousel__content">
+                  <h2 class="carousel__quote fluid-type">{t.quote}</h2>
+                  <div class="carousel__author list-item__desc fluid-type"><p>{t.author}</p></div>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+        {
+          (['left', 'right'] as const).map((dir) => (
+            <div class:list={['carousel__arrows', `carousel__arrows--${dir}`]}>
+              <button class="carousel__arrow" type="button" data-dir={dir === 'left' ? -1 : 1} aria-label={dir === 'left' ? 'Previous' : 'Next'}>
+                <span class="carousel__arrow-bg" />
+                <svg viewBox="0 0 44 18" aria-hidden="true">
+                  {arrow(dir).map((d) => <path d={d} />)}
+                </svg>
+              </button>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="carousel__mobile-arrows">
+      {
+        (['left', 'right'] as const).map((dir) => (
+          <button class="carousel__mobile-arrow" type="button" data-dir={dir === 'left' ? -1 : 1} aria-label={dir === 'left' ? 'Previous' : 'Next'}>
+            <span class="carousel__arrow-bg" />
+            <svg viewBox="0 0 24 14" aria-hidden="true">
+              {mobileArrow(dir).map((d) => <path d={d} />)}
+            </svg>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</ListShell>
+
+<script>
+  import { initCarousels } from '../scripts/carousel';
+  initCarousels();
+</script>

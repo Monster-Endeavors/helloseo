@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Block, { type Placement } from '../Block.astro';
+
+interface Props extends Placement {
+  src: ImageMetadata;
+  alt: string;
+  fit?: 'cover' | 'contain';
+  /** object-position, e.g. "50% 20%" */
+  focal?: string;
+  /** horizontal position of a "contain" image inside its cell */
+  position?: 'left' | 'center' | 'right';
+  radius?: string;
+  overlay?: { opacity: number; color?: string };
+  href?: string;
+  newTab?: boolean;
+  /** rendered width hint for srcset selection */
+  sizes?: string;
+  eager?: boolean;
+  /** scroll-driven zoom/drift effect, e.g. { intensity: 20, rotation: 45, zoomStart: 2 } */
+  parallax?: { intensity: number; rotation: number; zoomStart?: number; zoomEnd?: number };
+}
+
+const { src, alt, fit = 'cover', focal, position = 'center', radius, overlay, href, newTab, sizes, eager, parallax, ...place } = Astro.props;
+const JUSTIFY = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+const vars = [`--fit: ${fit}`, `--ratio: ${src.width / src.height}`, `--image-position: ${JUSTIFY[position]}`];
+if (focal) vars.push(`--focal: ${focal}`);
+if (radius) vars.push(`--radius: ${radius}`);
+if (overlay) vars.push(`--overlay-opacity: ${overlay.opacity}`);
+if (overlay?.color) vars.push(`--image-overlay: ${overlay.color}`);
+
+// Images without their own block animation get the site-wide wipe-in reveal.
+const reveal = !place.anim;
+const Wrap = href ? 'a' : 'div';
+---
+
+<Block {...place}>
+  <div class:list={['image-block', `image-block--${fit}`]} style={vars.join('; ')}>
+    <Wrap
+      class="image-block__frame-wrap"
+      href={href}
+      target={href && newTab ? '_blank' : undefined}
+      rel={href && newTab ? 'noopener' : undefined}
+    >
+      <div class="image-block__frame" data-reveal={reveal ? 'image' : undefined} data-parallax={parallax ? JSON.stringify(parallax) : undefined}>
+        <Image
+          src={src}
+          alt={alt}
+          widths={[300, 500, 750, 1000, 1500, 2500].filter((w) => w <= src.width)}
+          sizes={sizes ?? '(max-width: 767px) 100vw, 50vw'}
+          loading={eager ? 'eager' : 'lazy'}
+        />
+        {overlay && <div class="image-block__overlay" />}
+      </div>
+    </Wrap>
+  </div>
+</Block>

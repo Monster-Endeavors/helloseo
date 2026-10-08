@@ -1,0 +1,168 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/orange-gradient-1.png';
+import { navigation, headerCta, isFolder } from '../data/navigation';
+
+interface Props {
+  /** the header picks up the colour theme of the page's first section */
+  theme?: string;
+}
+const { theme = 'white' } = Astro.props;
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => href === current;
+
+const Chevron = 'M18 7L11 14L4 7';
+---
+
+<header class="header" id="header" data-theme={theme}>
+  <a href="#page" class="skip-link btn">Skip to Content</a>
+  <div class="header__bar">
+    <div class="header__border" aria-hidden="true"></div>
+    <div class="header__inner">
+      <!-- desktop -->
+      <div class="header__desktop">
+        <div class="header__title-nav">
+          <div class="header__title" data-reveal="header">
+            <a href="/" class="header__logo">
+              <Image src={logo} alt="HelloSEO" widths={[300, 500]} sizes="250px" loading="eager" fetchpriority="high" />
+            </a>
+          </div>
+          <div class="header__nav">
+            <nav class="header__nav-list" aria-label="Main">
+              {
+                navigation.map((item) =>
+                  isFolder(item) ? (
+                    <div class:list={['nav-item', 'nav-item--folder', { 'is-active': item.items.some((l) => isActive(l.href)) }]}>
+                      <button class="nav-item__folder-title" data-reveal="header" aria-expanded="false" aria-controls={`nav-${item.slug}`}>
+                        <span>{item.label}</span>
+                      </button>
+                      <div class="nav-item__folder" id={`nav-${item.slug}`}>
+                        {item.items.map((link) => (
+                          <div class:list={['nav-item__folder-item', { 'is-active': isActive(link.href) }]}>
+                            <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                              <span>{link.label}</span>
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div class:list={['nav-item', { 'is-active': isActive(item.href) }]}>
+                      <a href={item.href} data-reveal="header" aria-current={isActive(item.href) ? 'page' : undefined}>
+                        {item.label}
+                      </a>
+                    </div>
+                  ),
+                )
+              }
+            </nav>
+          </div>
+        </div>
+        <div class="header__actions">
+          <div class="header__cta" data-reveal="header">
+            <a class="btn btn--primary" href={headerCta.href}>{headerCta.label}</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- mobile -->
+      <div class="header__mobile">
+        <div class="header__title" data-reveal="header">
+          <a href="/" class="header__logo">
+            <Image src={logo} alt="HelloSEO" widths={[300, 500]} sizes="160px" loading="eager" />
+          </a>
+        </div>
+        <div class="header__burger" data-reveal="header">
+          <button class="burger" type="button" aria-expanded="false" aria-controls="menu">
+            <span class="visually-hidden" data-label-open>Open Menu</span>
+            <span class="visually-hidden" data-label-close hidden>Close Menu</span>
+            <span class="burger__box" aria-hidden="true">
+              <span class="burger__inner"><span class="burger__top"></span><span class="burger__patty"></span><span class="burger__bottom"></span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- mobile overlay menu -->
+  <div class="menu" id="menu" data-theme="white">
+    <div class="menu__bg"></div>
+    <div class="menu__nav">
+      <nav class="menu__nav-list" aria-label="Mobile">
+        <div class="menu__panel menu__panel--active" data-panel="root">
+          <div class="menu__panel-content">
+            {
+              navigation.map((item) =>
+                isFolder(item) ? (
+                  <div class="menu__item">
+                    <a href={`#${item.slug}`} data-open-panel={item.slug}>
+                      <span class="menu__item-content">
+                        <span class="visually-hidden">Folder:</span>
+                        <span>{item.label}</span>
+                        <span class="menu__chevron menu__chevron--after">
+                          <svg viewBox="0 0 22 22" aria-hidden="true"><path d={Chevron} /></svg>
+                        </span>
+                      </span>
+                    </a>
+                  </div>
+                ) : (
+                  <div class="menu__item">
+                    <a href={item.href}>
+                      <span class="menu__item-content">{item.label}</span>
+                    </a>
+                  </div>
+                ),
+              )
+            }
+          </div>
+          <div class="menu__cta">
+            <a class="btn btn--primary" href={headerCta.href}>{headerCta.label}</a>
+          </div>
+        </div>
+        {
+          navigation.filter(isFolder).map((folder) => (
+            <div class="menu__panel" data-panel={folder.slug}>
+              <div class="menu__panel-content">
+                <div class="menu__item menu__controls">
+                  <a href="#" data-close-panel>
+                    <span class="menu__chevron menu__chevron--before">
+                      <svg viewBox="0 0 22 22" aria-hidden="true"><path d={Chevron} /></svg>
+                    </span>
+                    <span>Back</span>
+                  </a>
+                </div>
+                {folder.items.map((link) => (
+                  <div class="menu__item">
+                    <a href={link.href}>
+                      <span class="menu__item-content">{link.label}</span>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  // Reserve space for the fixed header before first paint.
+  (function () {
+    var header = document.getElementById('header');
+    if (!header) return;
+    function set() {
+      document.documentElement.style.setProperty('--header-height', header.getBoundingClientRect().height + 'px');
+    }
+    set();
+    var imgs = header.getElementsByTagName('img');
+    for (var i = 0; i < imgs.length; i++) if (!imgs[i].complete) imgs[i].addEventListener('load', set);
+  })();
+</script>
+
+<script>
+  import { initHeader } from '../scripts/header';
+  initHeader();
+</script>

@@ -1,0 +1,50 @@
+---
+/** Endlessly scrolling row of logos ("As seen in", "Speaking appearances", …). */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import ListShell from './ListShell.astro';
+
+interface Logo {
+  src: ImageMetadata;
+  alt: string;
+  /** optional link (e.g. to the article or event) */
+  href?: string;
+}
+
+interface Props {
+  id?: string;
+  theme?: string;
+  padding: [number, number];
+  bg?: { src: ImageMetadata; overlay?: number; focal?: string };
+  /** rich-text title shown above the logos */
+  title?: string;
+  logos: Logo[];
+}
+
+const { logos, title, ...shell } = Astro.props;
+
+// Scroll speed is 30px/s on desktop (80px-tall logos, 100px apart) and 1.5×
+// slower on phones (44px logos, 30px apart). Durations derive from the set width.
+const setWidth = (h: number, gap: number) => logos.reduce((w, l) => w + (h * l.src.width) / l.src.height + gap, 0);
+const vars = `--duration-d: ${(setWidth(80, 100) / 30).toFixed(2)}s; --duration-m: ${((setWidth(44, 30) / 30) * 1.5).toFixed(2)}s`;
+// The visible set plus two hidden copies keeps the row full on wide screens.
+const copies = [0, 1, 2];
+---
+
+<ListShell {...shell}>
+  <div class="marquee">
+    {title && <div class="list-title list-title--center" set:html={title} />}
+    <ul class="marquee__track" style={vars}>
+      {
+        copies.map((copy) =>
+          logos.map((logo) => (
+            <li class="marquee__item" aria-hidden={copy > 0 ? 'true' : undefined}>
+              <Image src={logo.src} alt={copy > 0 ? '' : logo.alt} height={160} sizes="320px" densities={[1, 2]} loading="lazy" />
+              {logo.href && <a class="marquee__link" href={logo.href} target="_blank" rel="noopener" tabindex={copy > 0 ? -1 : undefined} aria-label={logo.alt} />}
+            </li>
+          )),
+        )
+      }
+    </ul>
+  </div>
+</ListShell>

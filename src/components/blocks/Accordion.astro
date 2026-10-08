@@ -1,0 +1,39 @@
+---
+import Block, { type Placement } from '../Block.astro';
+
+interface Props extends Placement {
+  items: { title: string; html: string }[];
+}
+
+const { items, ...place } = Astro.props;
+const uid = Math.random().toString(36).slice(2, 8);
+---
+
+<Block {...place}>
+  <ul class="accordion" data-accordion>
+    {
+      items.map((item, i) => (
+        <li class="accordion__item">
+          <h4 class="accordion__heading" data-reveal="text">
+            <button class="accordion__toggle" id={`acc-${uid}-${i}`} aria-expanded="false" aria-controls={`acc-${uid}-${i}-panel`}>
+              <span class="accordion__title">{item.title}</span>
+              <span class="accordion__icon" aria-hidden="true">
+                <span class="accordion__line" />
+                <span class="accordion__line accordion__line--v" />
+              </span>
+            </button>
+          </h4>
+          <div class="accordion__panel" id={`acc-${uid}-${i}-panel`} role="region" aria-labelledby={`acc-${uid}-${i}`} hidden>
+            <div class="accordion__body rte" set:html={item.html.trim()} />
+          </div>
+          <div class="accordion__divider" aria-hidden="true" />
+        </li>
+      ))
+    }
+  </ul>
+</Block>
+
+<script>
+  import { initAccordions } from '../../scripts/accordion';
+  initAccordions();
+</script>

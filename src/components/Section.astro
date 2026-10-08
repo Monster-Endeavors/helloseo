@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface Grid {
+  /** row counts for the mobile (8-col) and desktop (24-col) grids */
+  rows: [mobile: number, desktop: number];
+  rowGap: number;
+  colGap: number;
+}
+
+export interface Divider {
+  /** e.g. "2vw" */
+  height: string;
+  /** stroke colour; defaults to the theme's divider colour */
+  stroke?: string;
+  /** stroke width; defaults to 6px */
+  strokeWidth?: string;
+  /** concave corners (the next section appears to have rounded top corners) instead of rounded bottom corners */
+  concave?: boolean;
+}
+
+interface Props {
+  id?: string;
+  theme?: string;
+  height?: 'small' | 'medium' | 'large' | 'custom';
+  inset?: boolean;
+  /** custom-height sections: vertical padding in tenths of a vmax */
+  padding?: [top: number, bottom: number];
+  bg?: { src: ImageMetadata; overlay?: number; focal?: string; parallax?: boolean; eager?: boolean };
+  divider?: Divider;
+  grid?: Grid;
+  /** divider height of the section above, so this section's background tucks under its curve */
+  prevDivider?: string;
+  class?: string;
+}
+
+const { id, theme, height = 'custom', inset, padding, bg, divider, grid, prevDivider, class: className } = Astro.props;
+
+const style: Record<string, string> = {};
+if (divider) style['--divider-height'] = divider.height;
+if (prevDivider) style['--prev-divider-offset'] = prevDivider;
+if (divider?.stroke) style['--divider-stroke-color'] = divider.stroke;
+if (divider?.strokeWidth) style['--divider-stroke-width'] = divider.strokeWidth;
+const contentStyle = padding ? `padding: calc(${padding[0]}vmax / 10) 0 calc(${padding[1]}vmax / 10)` : undefined;
+const gridStyle = grid
+  ? `--rows-m: ${grid.rows[0]}; --rows-d: ${grid.rows[1]}; --row-gap: ${grid.rowGap}px; --col-gap: ${grid.colGap}px`
+  : undefined;
+---
+
+<section
+  id={id}
+  class:list={['section', `section--${height}`, { 'section--inset': inset, 'section--has-bg': bg }, className]}
+  data-theme={theme || undefined}
+  data-divider={divider ? '' : undefined}
+  data-divider-concave={divider?.concave ? '' : undefined}
+  style={style}
+>
+  <div class="section__border">
+    {
+      bg && (
+        <div class="section__bg" data-parallax={bg.parallax ? JSON.stringify({ intensity: 30, rotation: 90 }) : undefined}>
+          <Image
+            src={bg.src}
+            alt=""
+            widths={[750, 1000, 1500, 2500].filter((w) => w <= bg.src.width)}
+            sizes="(max-width: 799px) 200vw, 100vw"
+            loading={bg.eager ? 'eager' : 'lazy'}
+            fetchpriority={bg.eager ? 'high' : undefined}
+            style={bg.focal ? `object-position: ${bg.focal}` : undefined}
+          />
+          <div class="section__overlay" style={`opacity: ${bg.overlay ?? 0}`} />
+        </div>
+      )
+    }
+  </div>
+  <div class="section__content" style={contentStyle}>
+    <div class="section__inner">
+      {grid ? <div class="grid" style={gridStyle}><slot /></div> : <slot />}
+    </div>
+  </div>
+  {
+    divider && (
+      <div class="section-divider">
+        <svg class="section-divider__clip" aria-hidden="true">
+          <clipPath clipPathUnits="objectBoundingBox">
+            <path />
+          </clipPath>
+        </svg>
+        <svg viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+          <path class="stroke" vector-effect="non-scaling-stroke" />
+        </svg>
+      </div>
+    )
+  }
+</section>

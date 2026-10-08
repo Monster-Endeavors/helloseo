@@ -1,0 +1,176 @@
+/* ---------------------------------------------------------------------------
+   Sections
+   --------------------------------------------------------------------------- */
+.section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--p);
+}
+.section--small { min-height: 33vh; }
+.section--medium { min-height: 66vh; }
+.section--large { min-height: 100vh; }
+
+.section--inset {
+  padding: var(--site-gutter);
+}
+
+/* The first section sits underneath the transparent fixed header. */
+main > .section:first-child {
+  padding-top: var(--header-height, 100px);
+}
+
+.section__border {
+  position: absolute;
+  top: calc(-1 * var(--prev-divider-offset, 0px));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--bg);
+}
+.section--inset .section__border { background-color: var(--bg); }
+
+.section__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--bg);
+}
+.section--inset .section__bg { inset: var(--site-gutter); }
+.section__bg img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.section__bg[data-parallax] img { will-change: transform; }
+.section__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--overlay);
+}
+
+.section__content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.section--small > .section__content { padding-block: 3.3vmax; }
+.section--medium > .section__content { padding-block: 6.6vmax; }
+.section--large > .section__content { padding-block: 10vmax; }
+.section__inner { width: 100%; }
+
+/* The footer's first section tucks under the divider of the page's last section. */
+.site-footer > .section:first-child { --prev-divider-offset: var(--footer-offset, 0px); }
+
+/* Soft-corner divider at the bottom of a section (geometry is drawn by divider.ts). */
+.section[data-divider] {
+  padding-bottom: var(--divider-height);
+  z-index: 3;
+}
+.section--inset[data-divider] {
+  padding-bottom: calc(var(--site-gutter) + var(--divider-height));
+}
+.section[data-divider] .section__border { transform: translateZ(0); }
+.section-divider {
+  position: absolute;
+  top: calc(-1 * var(--prev-divider-offset, 0px));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  pointer-events: none;
+}
+.section-divider svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.section-divider path.stroke {
+  fill: transparent;
+  stroke: var(--divider-stroke-color, var(--divider-stroke));
+  stroke-width: var(--divider-stroke-width, 6px);
+  stroke-linecap: square;
+}
+
+/* ---------------------------------------------------------------------------
+   Fluid grid (24 columns on desktop, 8 on mobile)
+   --------------------------------------------------------------------------- */
+.grid {
+  --grid-gutter: calc(var(--mobile-gutter) - var(--col-gap));
+  --cell-max-width: calc((var(--max-width) - var(--col-gap) * 7) / 8);
+  position: relative;
+  display: grid;
+  grid-area: 1 / 1 / -1 / -1;
+  grid-template-rows: repeat(var(--rows-m), minmax(24px, auto));
+  grid-template-columns:
+    minmax(var(--grid-gutter), 1fr)
+    repeat(8, minmax(0, var(--cell-max-width)))
+    minmax(var(--grid-gutter), 1fr);
+  row-gap: var(--row-gap);
+  column-gap: var(--col-gap);
+  overflow-x: clip;
+}
+@media (min-width: 768px) {
+  .section--inset .grid { --inset-padding: calc(var(--site-gutter) * 2); }
+  .grid {
+    --grid-gutter: calc(var(--site-gutter) - var(--col-gap));
+    --cell-max-width: calc((var(--max-width) - var(--col-gap) * 23) / 24);
+    --inset-padding: 0vw;
+    --container-width: min(var(--max-width), calc(100vw - var(--site-gutter) * 2 - var(--inset-padding)));
+    grid-template-rows: repeat(var(--rows-d), minmax(calc(var(--container-width) * 0.0215), auto));
+    grid-template-columns:
+      minmax(var(--grid-gutter), 1fr)
+      repeat(24, minmax(0, var(--cell-max-width)))
+      minmax(var(--grid-gutter), 1fr);
+  }
+}
+
+/* A block occupies a grid area; placement differs per breakpoint. */
+.block {
+  position: relative;
+  grid-area: var(--area-m);
+  z-index: var(--z-m, auto);
+  --align: var(--align-m, flex-start);
+  opacity: var(--block-opacity, 1);
+  transform: var(--block-transform, none);
+  transform-origin: var(--block-origin, 50% 50%);
+}
+@media (min-width: 768px) {
+  .block {
+    grid-area: var(--area-d);
+    z-index: var(--z-d, auto);
+    --align: var(--align-d, flex-start);
+  }
+}
+.block__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--align);
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------------- */
+.site-footer .rte a { display: inline-block; }
+.footer-nav .rte p.small a {
+  text-decoration: none;
+  background-image: none;
+}
+.footer-nav .rte p.small a:hover {
+  color: #c9d8e8;
+  transform: scale(1.02);
+}

@@ -1,0 +1,59 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export type Align = 'start' | 'center' | 'end';
+
+export interface Placement {
+  /** grid-area on mobile (8 columns) */
+  m: string;
+  /** grid-area on desktop (24 columns) */
+  d: string;
+  /** z-index on desktop, and on mobile when `zm` is omitted */
+  z?: number;
+  zm?: number;
+  /** vertical alignment inside the cell (desktop, and mobile unless `alignM` is set) */
+  align?: Align;
+  alignM?: Align;
+  /** block animations (see src/scripts/animations.ts) */
+  anim?: unknown;
+  opacity?: number;
+  scale?: number;
+  origin?: string;
+  /** decorative outline drawn around the block, e.g. { border: '4px solid #fff', radius: '34px' } */
+  outline?: { border: string; radius: string };
+}
+
+interface Props extends Placement {
+  class?: string;
+  style?: string;
+  attrs?: HTMLAttributes<'div'>;
+}
+
+const FLEX: Record<Align, string> = { start: 'flex-start', center: 'center', end: 'flex-end' };
+const { m, d, z, zm, align = 'start', alignM, anim, opacity, scale, origin, outline, class: className, style: extra } = Astro.props;
+
+const vars = [
+  `--area-m: ${m}`,
+  `--area-d: ${d}`,
+  `--z-m: ${zm ?? z ?? 'auto'}`,
+  `--z-d: ${z ?? 'auto'}`,
+  `--align-m: ${FLEX[alignM ?? align]}`,
+  `--align-d: ${FLEX[align]}`,
+];
+if (opacity !== undefined) vars.push(`--block-opacity: ${opacity}`);
+if (scale !== undefined) vars.push(`--block-transform: scale(${scale})`);
+if (origin) vars.push(`--block-origin: ${origin}`);
+if (outline) vars.push(`--outline: ${outline.border}`, `--outline-radius: ${outline.radius}`);
+if (extra) vars.push(extra);
+---
+
+<div
+  class:list={['block', className]}
+  style={vars.join('; ')}
+  data-anim={anim ? JSON.stringify(anim) : undefined}
+  data-outline={outline ? '' : undefined}
+>
+  <div class="block__inner">
+    <slot />
+  </div>
+</div>
