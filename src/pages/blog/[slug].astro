@@ -21,7 +21,7 @@ const date = post.data.date.toLocaleDateString('en-US', { month: 'short', day: '
     <div class="section__content">
       <article class="blog-post">
         <header class="blog-post__header">
-          <div class="blog-post__meta" data-reveal="text">
+          <div class="blog-post__meta fluid-type" data-reveal="text">
             <time datetime={post.data.date.toISOString()}>{date}</time>
           </div>
           <h1 class="blog-post__title">{post.data.title}</h1>

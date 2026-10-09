@@ -59,7 +59,7 @@ const gridStyle = grid
   <div class="section__border">
     {
       bg && (
-        <div class="section__bg" data-parallax={bg.parallax ? JSON.stringify({ intensity: 30, rotation: 90 }) : undefined}>
+        <div class="section__bg" data-parallax={bg.parallax ? JSON.stringify({ intensity: 30, rotation: 90 }) : undefined} style={bg.focal ? `--fx: ${parseFloat(bg.focal) / 100}; --fy: ${parseFloat(bg.focal.split(' ')[1]) / 100}; --ar: ${bg.src.width / bg.src.height}` : undefined}>
           <Image
             src={bg.src}
             alt=""
@@ -67,7 +67,6 @@ const gridStyle = grid
             sizes="(max-width: 799px) 200vw, 100vw"
             loading={bg.eager ? 'eager' : 'lazy'}
             fetchpriority={bg.eager ? 'high' : undefined}
-            style={bg.focal ? `object-position: ${bg.focal}` : undefined}
           />
           <div class="section__overlay" style={`opacity: ${bg.overlay ?? 0}`} />
         </div>

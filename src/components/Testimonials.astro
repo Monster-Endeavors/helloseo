@@ -35,8 +35,10 @@ const mobileArrow = (dir: 'left' | 'right') =>
             items.map((t) => (
               <li class="carousel__slide" data-reveal="fade">
                 <div class="carousel__content">
-                  <h2 class="carousel__quote fluid-type">{t.quote}</h2>
-                  <div class="carousel__author list-item__desc fluid-type"><p>{t.author}</p></div>
+                  <div>
+                    <h2 class="carousel__quote fluid-type">{t.quote}</h2>
+                    <div class="carousel__author list-item__desc fluid-type"><p>{t.author}</p></div>
+                  </div>
                 </div>
               </li>
             ))

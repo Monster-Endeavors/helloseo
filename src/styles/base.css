@@ -125,8 +125,9 @@ p, .large, .small { margin: 1rem 0; line-height: var(--body-line-height); }
 p.large :is(strong, b) {
   font-family: var(--font-accent);
   font-weight: 400;
-  font-size: 1.1rem;
+  font-size: var(--accent-size, 1.1rem);
 }
+p.large b { font-size: 1.4rem; }
 
 /* Rich-text helpers */
 .ta-center { text-align: center; }

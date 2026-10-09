@@ -11,7 +11,7 @@ interface Props {
   theme?: string;
   /** vertical padding in vmax */
   padding: [top: number, bottom: number];
-  bg?: { src: ImageMetadata; overlay?: number; focal?: string };
+  bg?: { src: ImageMetadata; overlay?: number; focal?: string; parallax?: boolean };
   class?: string;
 }
 
@@ -22,8 +22,8 @@ const { id, theme, padding, bg, class: className } = Astro.props;
   <div class="section__border">
     {
       bg && (
-        <div class="section__bg">
-          <Image src={bg.src} alt="" widths={[750, 1000, 1500, 2500].filter((w) => w <= bg.src.width)} sizes="100vw" loading="lazy" style={bg.focal ? `object-position: ${bg.focal}` : undefined} />
+        <div class="section__bg" data-parallax={bg.parallax ? JSON.stringify({ intensity: 30, rotation: 90 }) : undefined} style={bg.focal ? `--fx: ${parseFloat(bg.focal) / 100}; --fy: ${parseFloat(bg.focal.split(' ')[1]) / 100}; --ar: ${bg.src.width / bg.src.height}` : undefined}>
+          <Image src={bg.src} alt="" widths={[750, 1000, 1500, 2500].filter((w) => w <= bg.src.width)} sizes="100vw" loading="lazy" />
           <div class="section__overlay" style={`opacity: ${bg.overlay ?? 0}`} />
         </div>
       )

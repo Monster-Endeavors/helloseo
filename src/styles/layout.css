@@ -46,6 +46,8 @@ main > .section:first-child {
   height: 100%;
   object-fit: cover;
 }
+/* focal point of a background image (object-position semantics, as in the original renderer) */
+.section__bg[style*='--fx'] img { object-position: calc(var(--fx) * 100%) calc(var(--fy) * 100%); }
 .section__bg[data-parallax] img { will-change: transform; }
 .section__overlay {
   position: absolute;

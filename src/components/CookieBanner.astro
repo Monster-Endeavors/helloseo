@@ -1,0 +1,71 @@
+---
+/**
+ * Cookie consent bar + "Manage cookies" dialog. Choices are stored in
+ * localStorage and forwarded to Google Analytics consent mode (see consent.ts).
+ */
+const categories = [
+  {
+    id: 'performance',
+    title: 'Performance and Analytics',
+    description:
+      'These cookies provide quantitative measures of website visitors. With the usage of these cookies we are able to count visits and traffic sources to improve the performance of our site.',
+  },
+  {
+    id: 'marketing',
+    title: 'Advertising',
+    description: 'These cookies are used by advertising companies to serve ads that are relevant to your interests.',
+  },
+];
+---
+
+<div class="cookies" data-cookies hidden>
+  <section class="cookie-bar" data-theme="bright" aria-label="Cookie banner">
+    <p class="cookie-bar__text fluid-type">
+      Select “Accept all” to agree to our use of cookies and similar technologies to enhance your browsing experience, security, analytics and customization. Select ”Manage cookies” to make more choices or opt out.
+    </p>
+    <div class="cookie-bar__buttons">
+      <button class="btn btn--tertiary cookie-btn" type="button" data-cookies-manage>Manage cookies</button>
+      <button class="btn btn--primary cookie-btn" type="button" data-cookies-accept>Accept all</button>
+    </div>
+  </section>
+
+  <div class="cookie-dialog-backdrop" data-cookies-dialog hidden>
+    <div class="cookie-dialog" data-theme="bright" role="dialog" aria-modal="true" aria-labelledby="cookie-dialog-title">
+      <button class="cookie-dialog__close" type="button" aria-label="Close" data-cookies-close>
+        <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" /></svg>
+      </button>
+      <h3 id="cookie-dialog-title">Manage Cookies</h3>
+      <div class="cookie-dialog__row">
+        <h4>Necessary</h4>
+        <p>Always on</p>
+      </div>
+      <p class="cookie-dialog__desc">
+        Required to enable core site functionality and to remember user preferences and choices, such as language preferences or customized settings.
+      </p>
+      {
+        categories.map((c) => (
+          <>
+            <hr />
+            <div class="cookie-dialog__row">
+              <h4 id={`cookie-${c.id}`}>{c.title}</h4>
+              <label class="cookie-toggle">
+                <span class="cookie-toggle__state" aria-hidden="true">Off</span>
+                <input type="checkbox" role="switch" data-cookie-category={c.id} aria-labelledby={`cookie-${c.id}`} />
+                <span class="cookie-toggle__track" aria-hidden="true" />
+              </label>
+            </div>
+            <p class="cookie-dialog__desc">{c.description}</p>
+          </>
+        ))
+      }
+      <div class="cookie-dialog__actions">
+        <button class="btn btn--primary cookie-btn" type="button" data-cookies-save>Save Preferences</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initCookieBanner } from '../scripts/consent';
+  initCookieBanner();
+</script>

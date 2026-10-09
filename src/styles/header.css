@@ -226,7 +226,7 @@ body.menu-open .header__border { visibility: hidden; }
 .burger {
   position: relative;
   display: inline-block;
-  padding: 0;
+  padding: 1px 6px;
   border: none;
   background-color: transparent;
   cursor: pointer;

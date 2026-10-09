@@ -3,6 +3,7 @@ import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import defaultOg from '../assets/images/social-share-6a8726b0.png';
 import '../styles/fonts.css';
 import '../styles/themes.css';
@@ -13,6 +14,7 @@ import '../styles/header.css';
 import '../styles/lists.css';
 import '../styles/forms.css';
 import '../styles/blog.css';
+import '../styles/cookies.css';
 import '../styles/animations.css';
 
 interface Props {
@@ -57,6 +59,20 @@ const ogUrl = new URL(og.src, Astro.site);
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={ogUrl} />
 
+    <!-- Google Analytics (consent mode: analytics stays denied until the visitor accepts) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BBCS9KY8F3"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', wait_for_update: 500 });
+      try {
+        var prefs = JSON.parse(localStorage.getItem('cookie-consent') || 'null');
+        if (prefs) gtag('consent', 'update', { analytics_storage: prefs.performance ? 'granted' : 'denied', ad_storage: prefs.marketing ? 'granted' : 'denied' });
+      } catch (e) {}
+      gtag('config', 'G-BBCS9KY8F3');
+    </script>
+
     <script is:inline>
       // Enable reveal animations only when JS runs (and motion is welcome).
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-anim');
@@ -70,6 +86,7 @@ const ogUrl = new URL(og.src, Astro.site);
       </main>
       <Footer offset={footerOffset} />
     </div>
+    <CookieBanner />
     <script>
       import { initAnimations } from '../scripts/animations';
       import { initDividers } from '../scripts/divider';
@@ -77,6 +94,16 @@ const ogUrl = new URL(og.src, Astro.site);
       initDividers();
       initParallax();
       initAnimations();
+    </script>
+    <!-- accessiBe accessibility widget (as on the original site) -->
+    <script is:inline>
+      (function () {
+        var s = document.createElement('script');
+        s.src = 'https://acsbapp.com/apps/app/dist/js/app.js';
+        s.async = true;
+        s.onload = function () { window.acsbJS && acsbJS.init(); };
+        (document.head || document.body).appendChild(s);
+      })();
     </script>
   </body>
 </html>

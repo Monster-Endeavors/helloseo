@@ -14,14 +14,29 @@ export function initHeader() {
   new ResizeObserver(setHeight).observe(header);
 
   // --- scroll state ---------------------------------------------------------
+  // Same rules as the original theme: past 10px the header turns solid; scrolling
+  // down hides it, and it comes back only after ~200px of continuous upward scroll.
+  const scrolled = () => window.scrollY > 10;
   let lastY = window.scrollY;
+  let upDistance = 0;
+  let lastUp = 0;
+  let unsolidTimer = 0;
   const onScroll = () => {
     const y = window.scrollY;
-    const h = header.offsetHeight;
-    header.classList.toggle('is-solid', y > 0);
-    if (y <= h) header.classList.remove('is-hidden');
-    else if (y > lastY) header.classList.add('is-hidden');
-    else if (y < lastY) header.classList.remove('is-hidden');
+    if (!scrolled() || header.matches(':focus-within')) {
+      header.classList.remove('is-hidden');
+    } else if (y > lastY) {
+      header.classList.add('is-hidden');
+    } else if (y < lastY) {
+      const now = Date.now();
+      upDistance += lastY - y;
+      if (now - lastUp > 500) upDistance = 0;
+      if (upDistance > 200) header.classList.remove('is-hidden');
+      lastUp = now;
+    }
+    window.clearTimeout(unsolidTimer);
+    if (scrolled()) header.classList.add('is-solid');
+    else unsolidTimer = window.setTimeout(() => header.classList.remove('is-solid'), 300);
     lastY = y;
   };
   onScroll();

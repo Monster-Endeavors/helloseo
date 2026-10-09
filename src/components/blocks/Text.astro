@@ -12,15 +12,18 @@ interface Props extends Placement {
   bulletColor?: string;
   /** small image used instead of list bullets */
   bulletIcon?: ImageMetadata;
+  /** size of bold text inside large paragraphs (defaults to 1.1rem) */
+  accentSize?: string;
 }
 
-const { bg, stroke, padding, radius, bulletColor, bulletIcon, ...place } = Astro.props;
+const { bg, stroke, padding, radius, bulletColor, bulletIcon, accentSize, ...place } = Astro.props;
 const vars: string[] = [];
 if (typeof bg === 'string') vars.push(`--text-block-bg: ${bg}`);
 if (stroke) vars.push('--stroke-style: solid', `--stroke-width: ${stroke.width}`, `--text-block-stroke: ${stroke.color}`);
 if (padding) vars.push(`--padding: ${padding}`);
 if (radius) vars.push(`--radius: ${radius}`);
 if (bulletColor) vars.push(`--bullet-color: ${bulletColor}`);
+if (accentSize) vars.push(`--accent-size: ${accentSize}`);
 if (bulletIcon) vars.push(`--bullet-icon: url(${bulletIcon.src})`);
 ---
 
