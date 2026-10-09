@@ -9,7 +9,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
-  gap: 20px;
+  gap: 1.44vw;
   box-sizing: border-box;
   padding: var(--site-gutter);
 }

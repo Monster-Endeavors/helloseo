@@ -16,6 +16,8 @@ type Anim = {
   ease: string;
   bounce?: number;
   frames: Frame[];
+  /** scroll trigger: where the animation completes, e.g. 'cover 50%' (it always starts at 'entry 0%') */
+  until?: string;
 };
 type Config = { base?: Frame; origin?: string; animations?: Anim[] };
 
@@ -24,8 +26,8 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const EASE: Record<string, string> = {
   linear: 'linear',
   ease: 'ease',
-  'ease-in': 'cubic-bezier(0.55, 0, 1, 0.45)',
-  'ease-out': 'cubic-bezier(0, 0.55, 0.45, 1)',
+  'ease-in': 'cubic-bezier(0.55, 0.055, 0.675, 0.19)',
+  'ease-out': 'cubic-bezier(0.22, 0.61, 0.36, 1)',
   'ease-in-out': 'cubic-bezier(0.78, 0, 0.22, 1)',
   'ease-in-out-back': 'cubic-bezier(0.68, -0.6, 0.32, 1.6)',
 };
@@ -118,20 +120,19 @@ function runAppear(el: HTMLElement, a: Anim, base: Frame) {
   });
 }
 
+/** Hover: animate to the first frame on enter; on leave go to the second frame (or back to rest). */
 function runHover(el: HTMLElement, a: Anim, base: Frame) {
-  const frames = [keyframe({}, base), ...a.frames.map((f) => keyframe(f, base))];
+  const enterTo = keyframe(a.frames[0], base);
+  const leaveTo = keyframe(a.frames[1] ?? {}, base);
   const opts: KeyframeAnimationOptions = { duration: a.duration * 1000, easing: easing(a), fill: 'forwards' };
   let anim: Animation | null = null;
-  el.addEventListener('mouseenter', () => {
+  const go = (to: Keyframe) => {
+    const from = { transform: getComputedStyle(el).transform, opacity: getComputedStyle(el).opacity };
     anim?.cancel();
-    anim = el.animate(frames, opts);
-  });
-  el.addEventListener('mouseleave', () => {
-    if (!anim) return;
-    const current = getComputedStyle(el).transform;
-    anim.cancel();
-    anim = el.animate([{ transform: current }, keyframe({}, base)], opts);
-  });
+    anim = el.animate([from, to], opts);
+  };
+  el.addEventListener('mouseenter', () => go(enterTo));
+  el.addEventListener('mouseleave', () => go(leaveTo));
 }
 
 function runLoop(el: HTMLElement, a: Anim, base: Frame) {
@@ -154,7 +155,7 @@ function runScroll(el: HTMLElement, a: Anim, base: Frame) {
     el.animate([keyframe(f0, base), keyframe(f1, base)], {
       timeline: new ViewTimelineCtor({ subject: el }),
       rangeStart: 'entry 0%',
-      rangeEnd: 'cover 50%',
+      rangeEnd: a.until ?? 'cover 50%',
       easing: easing(a),
       fill: 'both',
     } as KeyframeAnimationOptions);
