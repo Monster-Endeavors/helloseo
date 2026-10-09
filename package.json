@@ -20,6 +20,7 @@
     "pixelmatch": "^8.0.0",
     "playwright": "^1.64.0",
     "pngjs": "^7.0.0",
-    "postcss": "^8.5.29"
+    "postcss": "^8.5.29",
+    "wrangler": "^4.149.0"
   }
 }

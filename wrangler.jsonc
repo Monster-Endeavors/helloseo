@@ -1,0 +1,12 @@
+// Cloudflare Workers config: serves the static Astro build in ./dist
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "helloseo",
+  "compatibility_date": "2026-10-09",
+  "assets": {
+    "directory": "./dist",
+    // /contact is served from contact.html, unknown URLs get 404.html
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

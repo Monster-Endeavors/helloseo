@@ -9,6 +9,12 @@ npm run build      # static site in dist/
 npm run compare    # pixel-diff against the live site (see below)
 ```
 
+## Deploying
+
+The site is hosted on Cloudflare Workers (static assets). `wrangler.jsonc` points Cloudflare at `dist/`, serves `/contact` from `contact.html` and uses `404.html` for unknown URLs. Redirects live in `public/_redirects`.
+
+Cloudflare builds on every push to `main` (build command `npm run build`, deploy command `npx wrangler deploy`). To deploy by hand: `npm run build && npx wrangler deploy`.
+
 ## How pages are built
 
 Every page is a stack of **sections**. Most sections lay their content out on the same responsive grid the original used: 24 columns on desktop, 8 on phones, with rows that scale with the viewport. Each piece of content is a **block** placed on that grid.
