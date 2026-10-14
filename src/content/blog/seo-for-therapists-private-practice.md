@@ -1,8 +1,7 @@
 ---
-title: "SEO for Therapists: How to Get Found by Clients in Your City"
+title: "How to Get Found by Clients in Your City"
 date: 2026-10-14
 author: Jade Pruett
-description: "SEO for therapists, step by step: set up your Google Business Profile, write a page for each service, and earn local links so clients near you find your practice."
 keyword: "seo for therapists"
 image: ../../assets/images/therapist-roundup.png
 imageAlt: "A therapist's office with a laptop open to search results"
