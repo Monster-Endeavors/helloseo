@@ -23,7 +23,12 @@ function urlFor(file) {
 
 const changed = execFileSync('git', ['diff', '--name-only', '--diff-filter=AMR', `${BASE_SHA}...${HEAD_SHA}`], { encoding: 'utf8' })
   .split('\n').filter(f => /\.mdx?$/.test(f) && existsSync(f))
-const pages = changed.map(f => ({ file: f, url: urlFor(f) })).filter(p => p.url)
+const frontmatterTitle = (text) => {
+  const fm = text.match(/^---\s*\n([\s\S]*?)\n---/)?.[1] ?? ''
+  const t = fm.match(/^title:\s*(.+)$/m)?.[1]?.trim()
+  return t ? t.replace(/^(['"])(.*)\1$/, '$2') : null
+}
+const pages = changed.map(f => ({ file: f, url: urlFor(f), title: frontmatterTitle(readFileSync(f, 'utf8')) })).filter(p => p.url)
   .filter(p => !/^draft:\s*true\s*$/m.test(readFileSync(p.file, 'utf8').split(/^---\s*$/m)[1] ?? ''))
 
 if (pages.length === 0) { console.log('No published content pages changed.'); process.exit(0) }
@@ -45,35 +50,106 @@ async function evaluate(batch) {
   return body.data
 }
 
+let proposal = null
 const results = []
-for (let i = 0; i < pages.length; i += 20) results.push(...(await evaluate(pages.slice(i, i + 20))).pages)
+for (let i = 0; i < pages.length; i += 20) {
+  const data = await evaluate(pages.slice(i, i + 20))
+  proposal = data.proposal
+  results.push(...data.pages)
+}
 
-const ICON = { pass: '✅', warn: '⚠️', fail: '❌' }
-const measure = (e) => {
+// ---- Report -------------------------------------------------------------
+
+const GATE = { pass: '✅ Pass', warn: '⚠️ Warn', fail: '❌ Fail', pending: '⏳ Pending' }
+const ICON = { pass: '✅', warn: '⚠️', fail: '❌', pending: '⏳' }
+const cell = s => String(s ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ')
+// Older API responses carry plain check keys; newer ones carry labels and areas.
+const named = x => (typeof x === 'string' ? { check: x, label: x, factor_label: null } : { ...x, label: x.label ?? x.check, factor_label: x.factor_label ?? null })
+
+function measure(e) {
   if (typeof e.value !== 'number' || !e.target) return ''
   const u = e.check === 'image_alt_text' ? '%' : ''
-  return ` ${e.value}${u} (target ${e.target.min !== undefined ? `≥ ${e.target.min}${u}` : `≤ ${e.target.max}${u}`})`
+  const t = e.target
+  const target = t.min !== undefined && t.max !== undefined ? `${t.min}–${t.max}${u}` : t.min !== undefined ? `≥ ${t.min}${u}` : `≤ ${t.max}${u}`
+  return `**${e.value}${u}** (target ${target})`
 }
-const lines = ['## MetaMonster SEO check', '']
+
+function issueTable(list) {
+  const rows = ['| Factor | Area | Result | What to fix |', '| --- | --- | --- | --- |']
+  for (const raw of list) {
+    const e = named(raw)
+    let fix = cell(e.message)
+    if (e.missing_alt?.length) fix += `<br><sub>Missing alt: ${e.missing_alt.slice(0, 5).map(src => `\`${cell(src)}\``).join(', ')}${e.missing_alt.length > 5 ? ` +${e.missing_alt.length - 5} more` : ''}</sub>`
+    rows.push(`| ${cell(e.label)} | ${cell(e.factor_label ?? '—')} | ${measure(e) || '—'} | ${fix} |`)
+  }
+  return rows
+}
+
+function grouped(list) {
+  const byArea = new Map()
+  for (const raw of list) {
+    const e = named(raw)
+    const area = e.factor_label ?? 'Other'
+    byArea.set(area, [...(byArea.get(area) ?? []), e.label])
+  }
+  const out = []
+  for (const [area, labels] of byArea) out.push(`**${area}**`, ...labels.map(l => `- ${l}`), '')
+  return out
+}
+
+const count = (p, k) => p.diff?.[k]?.length ?? 0
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`
+const postTitle = p => pages.find(x => x.url === p.url)?.title ?? p.url
+const RANK = { fail: 0, pending: 1, warn: 2, pass: 3 }
+results.sort((a, b) => (RANK[a.gate_result] ?? 1) - (RANK[b.gate_result] ?? 1) || postTitle(a).localeCompare(postTitle(b)))
+const overall = results.some(p => p.gate_result === 'fail') ? 'fail' : results.some(p => p.gate_result === 'warn') ? 'warn' : 'pass'
+
+const lines = [
+  '<!-- metamonster-seo -->',
+  '## MetaMonster SEO check',
+  '',
+  `**${GATE[overall]}** · ${plural(results.length, 'page')} graded. ${
+    overall === 'fail' ? 'Fix the failing factors below and push again.'
+      : overall === 'warn' ? 'Nothing is failing; the warnings are worth a look.' : 'Every graded factor passes.'}`,
+  '',
+  '| Post | Result | Failing | Warnings | Passed |',
+  '| --- | --- | :---: | :---: | :---: |',
+  ...results.map(p => `| ${cell(postTitle(p))} | ${GATE[p.gate_result] ?? p.gate_result} | ${count(p, 'failing')} | ${count(p, 'warnings')} | ${count(p, 'passing')} |`),
+  '',
+]
+
 for (const p of results) {
   const file = pages.find(x => x.url === p.url)?.file ?? p.url
-  lines.push(`### ${ICON[p.gate_result] ?? '⏳'} \`${file}\` → ${p.url} · **${p.gate_result}**`)
-  if (p.keyword !== undefined) lines.push(`Graded on keyword: ${p.keyword ? `"${p.keyword}"` : 'none'}`, '')
-  const d = p.diff ?? { failing: [], warnings: [], not_evaluated: [] }
-  for (const [label, list] of [['Failing', d.failing], ['Warnings', d.warnings]]) {
-    if (!list?.length) continue
-    lines.push(`**${label} (${list.length})**`)
-    for (const e of list) {
-      lines.push(`- \`${e.check}\`${measure(e)}: ${e.message}`)
-      if (e.missing_alt?.length) lines.push(`  - missing alt: ${e.missing_alt.slice(0, 5).join(', ')}`)
-    }
-    lines.push('')
+  const d = p.diff ?? { failing: [], warnings: [], passing: [], not_evaluated: [] }
+  const collapse = results.length > 1 && p.gate_result === 'pass'
+  if (collapse) lines.push(`<details><summary>${ICON.pass} <b>${cell(postTitle(p))}</b> passes (${plural(count(p, 'passing'), 'factor')})</summary>`, '')
+  else lines.push('---', '', `### ${ICON[p.gate_result] ?? '⏳'} ${postTitle(p)}`, '')
+  const meta = [`URL \`${p.url}\``, `File \`${file}\``]
+  if (p.keyword !== undefined) meta.push(`Keyword **${p.keyword ?? 'none'}**`)
+  lines.push(meta.join(' · '), '')
+  if (d.failing?.length) lines.push(`#### ❌ Failing (${d.failing.length})`, '', ...issueTable(d.failing), '')
+  if (d.warnings?.length) lines.push(`#### ⚠️ Warnings (${d.warnings.length})`, '', ...issueTable(d.warnings), '')
+  // A collapsed passing post already hides its list; don't nest a second dropdown.
+  if (d.passing?.length && collapse) lines.push(...grouped(d.passing))
+  else if (d.passing?.length) lines.push(`<details><summary>✅ Passed (${d.passing.length})</summary>`, '', ...grouped(d.passing), '</details>', '')
+  if (d.not_evaluated?.length) {
+    lines.push(`<details><summary>⏭️ Not evaluated (${d.not_evaluated.length})</summary>`, '',
+      '_These need something the Markdown file doesn\'t contain, such as schema or a canonical tag your layout adds._', '',
+      ...grouped(d.not_evaluated), '</details>', '')
   }
-  if (d.not_evaluated?.length) lines.push(`<sub>Not evaluated: ${d.not_evaluated.join(', ')}</sub>`, '')
+  if (collapse) lines.push('</details>', '')
 }
+
+lines.push('---', `<sub>Graded by MetaMonster pre-publish analysis${proposal ? ` · proposal #${proposal.id}${proposal.revision ? `, revision ${proposal.revision}` : ''}` : ''} · commit \`${HEAD_SHA.slice(0, 7)}\`</sub>`)
 const report = lines.join('\n')
-writeFileSync('metamonster-report.md', report)
+// GitHub caps a comment at 65,536 characters; past that, the comment keeps the summary and links the job summary.
+const LIMIT = 60000
+const runUrl = process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null
+const summaryEnd = lines.indexOf('---')
+const comment = report.length <= LIMIT ? report
+  : [...lines.slice(0, summaryEnd === -1 ? lines.length : summaryEnd), '', `_The full report is too long for a comment.${runUrl ? ` See the [job summary](${runUrl}).` : ''}_`].join('\n')
+writeFileSync('metamonster-report.md', comment)
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, report)
 console.log(report)
 
-if (results.some(p => p.gate_result === 'fail')) { console.error('A page failed the MetaMonster gate.'); process.exit(1) }
+if (overall === 'fail') { console.error('A page failed the MetaMonster gate.'); process.exit(1) }
