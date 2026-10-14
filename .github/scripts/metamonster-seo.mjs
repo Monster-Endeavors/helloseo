@@ -66,35 +66,23 @@ const cell = s => String(s ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ')
 // Older API responses carry plain check keys; newer ones carry labels and areas.
 const named = x => (typeof x === 'string' ? { check: x, label: x, factor_label: null } : { ...x, label: x.label ?? x.check, factor_label: x.factor_label ?? null })
 
+/** "57% (target ≥ 90%)" for a numeric measurement with a min/max target, else ''. */
 function measure(e) {
   if (typeof e.value !== 'number' || !e.target) return ''
   const u = e.check === 'image_alt_text' ? '%' : ''
   const t = e.target
   const target = t.min !== undefined && t.max !== undefined ? `${t.min}–${t.max}${u}` : t.min !== undefined ? `≥ ${t.min}${u}` : `≤ ${t.max}${u}`
-  return `**${e.value}${u}** (target ${target})`
+  return `${e.value}${u} (target ${target})`
 }
 
-function issueTable(list) {
-  const rows = ['| Factor | Area | Result | What to fix |', '| --- | --- | --- | --- |']
-  for (const raw of list) {
-    const e = named(raw)
-    let fix = cell(e.message)
-    if (e.missing_alt?.length) fix += `<br><sub>Missing alt: ${e.missing_alt.slice(0, 5).map(src => `\`${cell(src)}\``).join(', ')}${e.missing_alt.length > 5 ? ` +${e.missing_alt.length - 5} more` : ''}</sub>`
-    rows.push(`| ${cell(e.label)} | ${cell(e.factor_label ?? '—')} | ${measure(e) || '—'} | ${fix} |`)
-  }
-  return rows
-}
-
-function grouped(list) {
-  const byArea = new Map()
-  for (const raw of list) {
-    const e = named(raw)
-    const area = e.factor_label ?? 'Other'
-    byArea.set(area, [...(byArea.get(area) ?? []), e.label])
-  }
-  const out = []
-  for (const [area, labels] of byArea) out.push(`**${area}**`, ...labels.map(l => `- ${l}`), '')
-  return out
+/** One factor per line: icon, name, the measurement when there is one, and what to fix. */
+function factorLines(list, icon) {
+  return list.map(named).map((e) => {
+    const m = measure(e)
+    let line = `${icon} **${e.label}**${m ? ` · ${m}` : ''}${e.message && icon !== ICON.pass ? ` — ${e.message}` : ''}`
+    if (e.missing_alt?.length) line += `<br>&nbsp;&nbsp;&nbsp;&nbsp;<sub>Missing alt: ${e.missing_alt.slice(0, 5).map(src => `\`${src}\``).join(', ')}${e.missing_alt.length > 5 ? ` +${e.missing_alt.length - 5} more` : ''}</sub>`
+    return line
+  }).join('<br>\n')
 }
 
 const count = (p, k) => p.diff?.[k]?.length ?? 0
@@ -112,11 +100,11 @@ const lines = [
     overall === 'fail' ? 'Fix the failing factors below and push again.'
       : overall === 'warn' ? 'Nothing is failing; the warnings are worth a look.' : 'Every graded factor passes.'}`,
   '',
-  '| Post | Result | Failing | Warnings | Passed |',
-  '| --- | --- | :---: | :---: | :---: |',
-  ...results.map(p => `| ${cell(postTitle(p))} | ${GATE[p.gate_result] ?? p.gate_result} | ${count(p, 'failing')} | ${count(p, 'warnings')} | ${count(p, 'passing')} |`),
-  '',
 ]
+if (results.length > 1) {
+  lines.push('| Post | Result | Failing | Warnings | Passed |', '| --- | --- | :---: | :---: | :---: |',
+    ...results.map(p => `| ${cell(postTitle(p))} | ${GATE[p.gate_result] ?? p.gate_result} | ${count(p, 'failing')} | ${count(p, 'warnings')} | ${count(p, 'passing')} |`), '')
+}
 
 for (const p of results) {
   const file = pages.find(x => x.url === p.url)?.file ?? p.url
@@ -127,15 +115,15 @@ for (const p of results) {
   const meta = [`URL \`${p.url}\``, `File \`${file}\``]
   if (p.keyword !== undefined) meta.push(`Keyword **${p.keyword ?? 'none'}**`)
   lines.push(meta.join(' · '), '')
-  if (d.failing?.length) lines.push(`#### ❌ Failing (${d.failing.length})`, '', ...issueTable(d.failing), '')
-  if (d.warnings?.length) lines.push(`#### ⚠️ Warnings (${d.warnings.length})`, '', ...issueTable(d.warnings), '')
+  const issues = [factorLines(d.failing ?? [], ICON.fail), factorLines(d.warnings ?? [], ICON.warn)].filter(Boolean).join('<br>\n')
+  if (issues) lines.push(issues, '')
   // A collapsed passing post already hides its list; don't nest a second dropdown.
-  if (d.passing?.length && collapse) lines.push(...grouped(d.passing))
-  else if (d.passing?.length) lines.push(`<details><summary>✅ Passed (${d.passing.length})</summary>`, '', ...grouped(d.passing), '</details>', '')
+  if (d.passing?.length && collapse) lines.push(factorLines(d.passing, ICON.pass), '')
+  else if (d.passing?.length) lines.push(`<details><summary>${ICON.pass} ${plural(d.passing.length, 'factor')} passed</summary>`, '', factorLines(d.passing, ICON.pass), '', '</details>', '')
   if (d.not_evaluated?.length) {
-    lines.push(`<details><summary>⏭️ Not evaluated (${d.not_evaluated.length})</summary>`, '',
+    lines.push(`<details><summary>➖ ${plural(d.not_evaluated.length, 'factor')} not evaluated</summary>`, '',
       '_These need something the Markdown file doesn\'t contain, such as schema or a canonical tag your layout adds._', '',
-      ...grouped(d.not_evaluated), '</details>', '')
+      factorLines(d.not_evaluated, '➖'), '', '</details>', '')
   }
   if (collapse) lines.push('</details>', '')
 }
