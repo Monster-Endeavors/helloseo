@@ -1,15 +1,16 @@
 ---
-title: "How Therapists Can Get Found on Google"
+title: "Therapist SEO: How Therapists Can Get Found on Google"
+description: "Therapist SEO in plain steps: claim your Google Business Profile, write one page per service, and help local clients find your practice."
 keyword: therapist seo
 date: 2026-10-14
 author: Jade Pruett
 ---
 
-# How Therapists Can Get Found on Google
+# Therapist SEO: How to Get Found on Google
 
 Therapist SEO helps people in your area find your practice when they search.
 
-## Start with your Google Business Profile
+## How do I start with my Google Business Profile?
 
 Claim it, add your specialties, and keep your hours current.
 
