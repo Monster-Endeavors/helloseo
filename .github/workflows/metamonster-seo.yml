@@ -1,0 +1,43 @@
+name: MetaMonster SEO check
+
+on:
+  pull_request:
+    paths:
+      - 'src/content/**/*.md'
+      - 'src/content/**/*.mdx'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Grade changed pages
+        env:
+          METAMONSTER_API_KEY: ${{ secrets.METAMONSTER_API_KEY }}
+          METAMONSTER_SITE_ID: ${{ vars.METAMONSTER_SITE_ID }}
+          # Content folder → URL prefix, comma separated. Edit to match your routes.
+          CONTENT_ROUTES: 'src/content/blog/=/blog/'
+          # 'false' when astro.config has trailingSlash: 'never'.
+          TRAILING_SLASH: 'false'
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          EXTERNAL_REF: github:${{ github.repository }}#${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node .github/scripts/metamonster-seo.mjs
+
+      - name: Comment on the PR
+        if: always() && hashFiles('metamonster-report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.pull_request.number }} --body-file metamonster-report.md --edit-last || gh pr comment ${{ github.event.pull_request.number }} --body-file metamonster-report.md
