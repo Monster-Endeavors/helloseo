@@ -17,3 +17,9 @@ Claim it, add your specialties, and keep your hours current.
 ## Write one page per service
 
 A page for anxiety therapy and a page for couples counseling each give Google a clear match.
+
+## What should I put on my homepage?
+
+- Who you help
+- Where you practice
+- How to book a first session
