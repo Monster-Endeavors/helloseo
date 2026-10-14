@@ -75,14 +75,20 @@ function measure(e) {
   return `${e.value}${u} (target ${target})`
 }
 
-/** One factor per line: icon, name, the measurement when there is one, and what to fix. */
-function factorLines(list, icon) {
-  return list.map(named).map((e) => {
+// Until the API sends the message for passing factors, show a placeholder.
+const PASS_PLACEHOLDER = '_What MetaMonster confirmed will show here._'
+
+/** A compact table: icon, factor (with its measurement underneath when it has one), and the message. */
+function factorTable(list, icon, heading) {
+  const rows = [`| | Factor | ${heading} |`, '| :---: | --- | --- |']
+  for (const e of list.map(named)) {
     const m = measure(e)
-    let line = `${icon} **${e.label}**${m ? ` · ${m}` : ''}${e.message && icon !== ICON.pass ? ` — ${e.message}` : ''}`
-    if (e.missing_alt?.length) line += `<br>&nbsp;&nbsp;&nbsp;&nbsp;<sub>Missing alt: ${e.missing_alt.slice(0, 5).map(src => `\`${src}\``).join(', ')}${e.missing_alt.length > 5 ? ` +${e.missing_alt.length - 5} more` : ''}</sub>`
-    return line
-  }).join('<br>\n')
+    const factor = `**${cell(e.label)}**${m ? `<br><sub>${m}</sub>` : ''}`
+    let text = cell(e.message) || (icon === ICON.pass ? PASS_PLACEHOLDER : '—')
+    if (e.missing_alt?.length) text += `<br><sub>Missing alt: ${e.missing_alt.slice(0, 5).map(src => `\`${cell(src)}\``).join(', ')}${e.missing_alt.length > 5 ? ` +${e.missing_alt.length - 5} more` : ''}</sub>`
+    rows.push(`| ${icon} | ${factor} | ${text} |`)
+  }
+  return rows
 }
 
 const count = (p, k) => p.diff?.[k]?.length ?? 0
@@ -100,11 +106,11 @@ const lines = [
     overall === 'fail' ? 'Fix the failing factors below and push again.'
       : overall === 'warn' ? 'Nothing is failing; the warnings are worth a look.' : 'Every graded factor passes.'}`,
   '',
+  '| Post | Result | Failing | Warnings | Passed |',
+  '| --- | --- | :---: | :---: | :---: |',
+  ...results.map(p => `| ${cell(postTitle(p))} | ${GATE[p.gate_result] ?? p.gate_result} | ${count(p, 'failing')} | ${count(p, 'warnings')} | ${count(p, 'passing')} |`),
+  '',
 ]
-if (results.length > 1) {
-  lines.push('| Post | Result | Failing | Warnings | Passed |', '| --- | --- | :---: | :---: | :---: |',
-    ...results.map(p => `| ${cell(postTitle(p))} | ${GATE[p.gate_result] ?? p.gate_result} | ${count(p, 'failing')} | ${count(p, 'warnings')} | ${count(p, 'passing')} |`), '')
-}
 
 for (const p of results) {
   const file = pages.find(x => x.url === p.url)?.file ?? p.url
@@ -115,15 +121,15 @@ for (const p of results) {
   const meta = [`URL \`${p.url}\``, `File \`${file}\``]
   if (p.keyword !== undefined) meta.push(`Keyword **${p.keyword ?? 'none'}**`)
   lines.push(meta.join(' · '), '')
-  const issues = [factorLines(d.failing ?? [], ICON.fail), factorLines(d.warnings ?? [], ICON.warn)].filter(Boolean).join('<br>\n')
-  if (issues) lines.push(issues, '')
+  if (d.failing?.length) lines.push(`#### ❌ Failing (${d.failing.length})`, '', ...factorTable(d.failing, ICON.fail, 'What to fix'), '')
+  if (d.warnings?.length) lines.push(`#### ⚠️ Warnings (${d.warnings.length})`, '', ...factorTable(d.warnings, ICON.warn, 'What to fix'), '')
   // A collapsed passing post already hides its list; don't nest a second dropdown.
-  if (d.passing?.length && collapse) lines.push(factorLines(d.passing, ICON.pass), '')
-  else if (d.passing?.length) lines.push(`<details><summary>${ICON.pass} ${plural(d.passing.length, 'factor')} passed</summary>`, '', factorLines(d.passing, ICON.pass), '', '</details>', '')
+  if (d.passing?.length && collapse) lines.push(...factorTable(d.passing, ICON.pass, 'Confirmed'), '')
+  else if (d.passing?.length) lines.push(`<details><summary>✅ Passed (${d.passing.length})</summary>`, '', ...factorTable(d.passing, ICON.pass, 'Confirmed'), '', '</details>', '')
   if (d.not_evaluated?.length) {
-    lines.push(`<details><summary>➖ ${plural(d.not_evaluated.length, 'factor')} not evaluated</summary>`, '',
+    lines.push(`<details><summary>➖ Not evaluated (${d.not_evaluated.length})</summary>`, '',
       '_These need something the Markdown file doesn\'t contain, such as schema or a canonical tag your layout adds._', '',
-      factorLines(d.not_evaluated, '➖'), '', '</details>', '')
+      ...factorTable(d.not_evaluated, '➖', 'Why').map(r => r.replace('| — |', '| Needs input the Markdown doesn\'t include |')), '', '</details>', '')
   }
   if (collapse) lines.push('</details>', '')
 }
