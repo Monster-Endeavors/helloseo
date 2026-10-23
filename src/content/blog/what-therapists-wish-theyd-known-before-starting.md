@@ -1,5 +1,5 @@
 ---
-title: "How to Start a Private Practice as a Therapist: 8 Lessons"
+title: "How to Start a Private Practice as a Therapist: 8 Lessons From Real Experiences"
 description: "How to start a private practice as a therapist? 8 therapists share what they wish they'd known, from business coaches to marketing and insurance admin."
 date: 2026-10-05
 author: Jade Pruett
