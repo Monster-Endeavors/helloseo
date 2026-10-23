@@ -1,5 +1,5 @@
 ---
-title: "Private Practice: What 8 Therapists Wish They’d Known Before Starting"
+title: "How to Start a Private Practice as a Therapist: 8 Lessons"
 date: 2026-10-05
 author: Jade Pruett
 image: ../../assets/images/therapist-roundup.png
